@@ -23,10 +23,9 @@ We downloading some more stuff. https://github.com/coreybutler/nvm-windows/relea
 Download the nvm-setup.zip, extract it, and run the .exe as admin.
 Install nvm. Open a command prompt and run 
 
-<code>nvm v</code> If you see some numbers you good.
-run 
+<code>nvm v</code> If you see some numbers you good. 
 
-`nvm install 16.10.0` then `nvm use 16.10.0`
+Run `nvm install 16.10.0` then `nvm use 16.10.0`
 
 If it is saying stuff about access denied or something you probably didn't run the command prompt as admin.
 If it is still yelling at you that the access is denied you probably didn't run the nvm setup as admin. If you did both those things, idk man I'm not a wizard.
