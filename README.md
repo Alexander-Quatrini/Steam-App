@@ -82,7 +82,7 @@ Open up another command prompt, ooo hackerman.
 
 In one cmd navigate to the project folder. Run <code>dotnet run</code>
 
-In the other navigate to the ClientApp folder inside the project file. Run <code>ng serve</code>
+In the other navigate to the ClientApp folder inside the project folder. Run <code>ng serve</code>
 
 Go to web browser and open up localhost:4200, and you should see a web page with <b>Hello World!</b> at the top and some stuff about ASP.NET. If you see that you really did it my boy.
 
