@@ -57,6 +57,8 @@ Ok we are in the home stretch... go ahead and clone this repository to your mach
 
 I don't remember this next part too well so if anything goes wrong feel free to ask for help, I'll probably figure it out.
 
+<h2>Final Setup</h2>
+
 Run these commands, if anywhere you get a fatal error or there is vulnerabilities at the end tell me, and we will fix the problem together :)
 
 <code>npm install -g npm@6.14.15</code>
@@ -66,6 +68,14 @@ Run these commands, if anywhere you get a fatal error or there is vulnerabilitie
 <code>ng update</code>
 
 Should say that @angular/cli and @angular/core need to be updated here.
+
+\*<strong>EDIT</strong>\*
+
+I forgot about installing Angular heh. ONLY DO THIS IF YOU DO NOT HAVE ANGULAR (ng update results in a message that ng is not a command) <code>npm install -g @angular/cli</code>
+
+Check the version with `ng version` to verify it's worked. Run `ng update` again and update if needed. Continue.
+
+\*<strong>END EDIT</strong>\*
 
 <code>ng update @angular/cli</code>
 This should update both, but run <code>ng update @angular/core</code> just to make sure.
