@@ -31,7 +31,9 @@ run
 If it is saying stuff about access denied or something you probably didn't run the command prompt as admin.
 If it is still yelling at you that the access is denied you probably didn't run the nvm setup as admin. If you did both those things, idk man I'm not a wizard.
 
-So the cool thing about nvm is that you can now switch Node versions on the fly by typing `nvm install <version number>` then `nvm use <version number>`
+So the cool thing about nvm is that you can now switch Node versions on the fly by typing 
+
+`nvm install <version number>` then `nvm use <version number>`
 
 It will be helpful I promise, it took me a while to figure out how to switch Node.js versions without just straight up uninstalling Node.js
 
