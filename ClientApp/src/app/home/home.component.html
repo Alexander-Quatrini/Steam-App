@@ -1,5 +1,13 @@
 <div class="container">
-  <h2>Don't know what game to play?</h2>
-  <h3>The Boy Os got you covered.</h3>
-  <h4><a [routerLink]="['/login']">Login to get started.</a></h4>
+  <div *ngIf="!loggedIn; else homePage">
+    <h2>Don't know what game to play?</h2>
+    <h3>The Boy Os got you covered.</h3>
+    <h4><a [routerLink]="['/login']">Login to get started.</a></h4>
+  </div>
+
+  <ng-template #homePage>
+    <div>
+      <h5>Logged in as {{steamID}}</h5>
+    </div>
+  </ng-template>
 </div>

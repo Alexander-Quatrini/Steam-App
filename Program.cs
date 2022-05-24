@@ -1,6 +1,22 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Steam_App.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor()
+.AddSingleton<AuthenticationHandler>()
+.AddAuthentication(options => {options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;})
+.AddSteam(options => 
+{
+    options.EventsType = typeof(AuthenticationHandler);
+}).AddCookie();
 
 // Add services to the container.
+builder.Services.AddCors(options => 
+    options.AddDefaultPolicy(x  => 
+    x.AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin())
+    );
 
 builder.Services.AddControllersWithViews();
 
@@ -13,10 +29,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

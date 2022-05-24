@@ -1,15 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { getCookie } from '../util/cookie.util';
+import { Constants } from '../util/constants.util';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent{
 
-  constructor() { }
+  apiPort = Constants.apiPort;
+  apiUrl = Constants.apiUrl;
+  steamCookieName = Constants.steamCookieName
 
-  ngOnInit(): void {
+  constructor(private http: HttpClient) {}
+
+  steamSignIn(){
+    //var steamID = getCookie(this.steamCookieName);
+    
+    //if(steamID == ""){
+      window.location.href = this.apiUrl + ":" + this.apiPort + "/api/authentication/signin"
+    //}
+
   }
-
 }

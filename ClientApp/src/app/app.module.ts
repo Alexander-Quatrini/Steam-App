@@ -23,7 +23,7 @@ import { LoginComponent } from './login/login.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'login', component: LoginComponent},
-    ])
+    ], {onSameUrlNavigation: 'reload'})
   ],
   providers: [],
   bootstrap: [AppComponent]
