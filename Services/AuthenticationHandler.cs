@@ -51,7 +51,6 @@ public class AuthenticationHandler: OpenIdAuthenticationEvents{
 
     public bool ValidateSession(string id, Guid uuid)
     {
-        Console.WriteLine(id + " " + uuid.ToString());
         return (validSessions.Any(item => item.Key == id && item.Value.Equals(uuid)));
     }
 }

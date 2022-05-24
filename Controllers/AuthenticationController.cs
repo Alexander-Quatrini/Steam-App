@@ -30,7 +30,6 @@ public class AuthenticationController: ControllerBase{
     public IActionResult ValidateSession([FromBody] JsonElement data){
         var id = data.GetString("ID");
         var guid = data.GetString("sessionID");
-        Console.WriteLine(guid);
         Guid.TryParse(guid, out Guid sessionID);
         
         if(!Object.Equals(id,null) && !Object.Equals(guid,null)){
