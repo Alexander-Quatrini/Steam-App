@@ -32,7 +32,13 @@ export class HomeComponent implements OnInit {
       if(this.steamID != ""){
         this.loggedIn = true;
         console.log("Logged in as: " + this.steamID);
+        
+        var n = this.steamID.lastIndexOf('/');
+        var IDSub = this.steamID.substring(n + 1);
         this.ValidateSession(this.steamCookieName, this.sessionIDCookieName);
+        this.http.post(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub}).toPromise().catch(err => {
+          console.log(err);
+        })
       } else{
         this.loggedIn = false;
       }
