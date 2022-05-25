@@ -7,7 +7,8 @@
 
   <ng-template #homePage>
     <div>
-      <h5>Logged in as {{steamID}}</h5>
+      <h5>Logged in as {{currentSteamUser.personaname}}</h5>
+      <img src="{{currentSteamUser.avatarfull}}"/>
     </div>
   </ng-template>
 </div>

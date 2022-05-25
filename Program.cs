@@ -3,6 +3,7 @@ using Steam_App.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor()
+.AddHttpClient()
 .AddSingleton<AuthenticationHandler>()
 .AddAuthentication(options => {options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;})
 .AddSteam(options => 
