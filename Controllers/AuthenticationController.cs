@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Steam_App.Services;
@@ -18,10 +19,27 @@ public class AuthenticationController: ControllerBase{
         _handler = handler;
     }
 
+    [HttpPost]
+    [Route("signout")]
+    public IActionResult SignOutUser([FromBody] JsonElement data){
+        var id = data.GetString("ID");
+        var guid = data.GetString("sessionID");
+        
+        Guid.TryParse(guid, out Guid sessionID);
+        
+        if(!Object.Equals(id,null) && !Object.Equals(sessionID,null)){
+            if(_handler.invalidateSessionWithId(id, sessionID)){
+                return SignOut(new AuthenticationProperties { RedirectUri = "/"}, CookieAuthenticationDefaults.AuthenticationScheme);
+            } else {
+                Console.WriteLine("User with ID: " + id + "has no valid session, but tried to logout.");
+                return BadRequest();
+            }
+        } else return BadRequest();
+    }
+
     [HttpGet]
     [Route("signin")]
-    public IActionResult SignIn()
-    {
+    public IActionResult SignIn(){
         return Challenge(properties, "Steam");
     }
     
@@ -32,7 +50,7 @@ public class AuthenticationController: ControllerBase{
         var guid = data.GetString("sessionID");
         Guid.TryParse(guid, out Guid sessionID);
         
-        if(!Object.Equals(id,null) && !Object.Equals(guid,null)){
+        if(!Object.Equals(id,null) && !Object.Equals(sessionID,null)){
             if(!_handler.ValidateSession(id, sessionID)){
                 return Unauthorized();
             }

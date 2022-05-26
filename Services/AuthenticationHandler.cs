@@ -34,6 +34,13 @@ public class AuthenticationHandler: OpenIdAuthenticationEvents{
         return Task.CompletedTask;
     }
 
+    public bool invalidateSessionWithId(string id, Guid sessionID)
+    {
+        if(validSessions.Any(item => item.Key == id && item.Value.Equals(sessionID))){
+            return (validSessions.Remove(id));
+        } else return false;
+    }
+
     public void addValidSession(string id, Guid uuid)
     {
         bool existingSession = validSessions.Any(item => item.Key == id);

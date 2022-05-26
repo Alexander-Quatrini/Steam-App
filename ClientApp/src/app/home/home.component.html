@@ -2,7 +2,8 @@
   <div *ngIf="!loggedIn; else homePage">
     <h2>Don't know what game to play?</h2>
     <h3>The Boy Os got you covered.</h3>
-    <h4><a [routerLink]="['/login']">Login to get started.</a></h4>
+    <h4><a [routerLink]="['/login']">Login to your Steam account to get started.</a></h4>
+    <app-image-carousel></app-image-carousel>
   </div>
 
   <ng-template #homePage>

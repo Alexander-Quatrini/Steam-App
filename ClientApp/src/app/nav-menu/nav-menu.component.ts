@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { getCookie } from '../util/cookie.util';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,7 +8,7 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
-
+  loggedIn: boolean = (getCookie("SteamID") != "");
   collapse() {
     this.isExpanded = false;
   }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { getCookie } from '../util/cookie.util';
 import { Constants } from '../util/constants.util';
 @Component({
   selector: 'app-login',
@@ -11,7 +10,6 @@ export class LoginComponent{
 
   apiPort = Constants.apiPort;
   apiUrl = Constants.apiUrl;
-  steamCookieName = Constants.steamCookieName
 
   constructor(private http: HttpClient) {}
 
