@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs/index';
+import { interval } from 'rxjs';
 import { trigger, state, style, animate, transition, sequence, keyframes } from '@angular/animations';
 @Component({
   selector: 'app-image-carousel',
@@ -8,11 +8,11 @@ import { trigger, state, style, animate, transition, sequence, keyframes } from 
   animations: [
     trigger('fade',[
 
-    transition('*=>*', [ sequence([
-        animate('2.5s 2.5s', style({ opacity: 0})),animate("2.5s", style({opacity: 1}))])
+      transition('*=>*', [ 
+          animate('0.5s 2.5s', style({ opacity: 0})),
+          ]),
         ])
-      ])
-    ]
+      ]
 })
 export class ImageCarouselComponent implements OnInit {
 
@@ -21,7 +21,7 @@ export class ImageCarouselComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    var timer = interval(5000);
+    var timer = interval(3000);
     timer.subscribe(value => this.switchImage());
   }
 
