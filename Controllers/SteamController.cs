@@ -19,6 +19,14 @@ public class SteamController: ControllerBase{
         API_URL = "https://api.steampowered.com/";
     }
 
+
+    /* GetUserInfo
+    *
+    *   Parameters: JsonElement with a Steam ID.
+    *
+    *   Returns: Response from Steam Web API. Get Player Summaries call.
+    *   Notes: Steam Web API docs are found at: https://steamcommunity.com/dev 
+    */
     [HttpPost]
     [Route("getuserinfo")]
     public async Task<IActionResult> GetUserInfo([FromBody] JsonElement data)

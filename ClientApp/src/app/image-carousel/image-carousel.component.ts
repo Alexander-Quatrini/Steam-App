@@ -16,7 +16,7 @@ import { trigger, state, style, animate, transition, sequence, keyframes } from 
 })
 export class ImageCarouselComponent implements OnInit {
 
-  imageSources: string[] = ["src1.jpg", "src2.jpg", "src3.jpg", "src4.gif"];
+  imageSources: string[] = ["src1.jpg", "src2.jpg", "src3.jpg"];
   currentIndex: number = 0;
   constructor() { }
 
