@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { Constants } from '../util/constants.util';
@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
   apiPort = Constants.apiPort;
   apiUrl = Constants.apiUrl;
   steamID: string = "";
+  sessionID: string = "";
   loggedIn: boolean = false;
   steamCookieName: string = Constants.steamCookieName;
   sessionIDCookieName: string = Constants.sessionIdName;
@@ -36,9 +37,8 @@ export class HomeComponent implements OnInit {
         
         var n = this.steamID.lastIndexOf('/');
         var IDSub = this.steamID.substring(n + 1);
-        
-        if(this.ValidateSession(this.steamCookieName, this.sessionIDCookieName)){
-          this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub})
+          this.sessionID = getCookie(this.sessionIDCookieName);
+          this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub, SessionID: this.sessionID})
           .toPromise().then(content => 
           {
             var response = content.response.players[0];
@@ -48,35 +48,27 @@ export class HomeComponent implements OnInit {
             console.log(response);
             this.loggedIn = true;
           })
-          .catch(err => {console.log(err);})
-        }
-        
+          .catch(err => {
+            this.handleError(err);
+          })      
       } else{
         this.loggedIn = false;
       }
   }
-
-  ValidateSession(idCookieName: string, sessionIDCookieName: string): boolean{
-
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
-
-    this.http.post(this.apiUrl + ":" + this.apiPort + "/api/authentication/sessionvalid/", 
-    {ID: getCookie(idCookieName), sessionID: getCookie(sessionIDCookieName)}, 
-    httpOptions).toPromise().catch(err => {
-      if(err.status === 401)
-      {
-        this.loggedIn = false;
-        window.location.href = this.apiUrl + ":" + this.apiPort + "/api/authentication/signin";
-        return false;
-      }
-      return false;
-    });
-    return true;
-  }
  
+  handleError(error: HttpErrorResponse): void{
+    if(error.status == 401){
+      this.loggedIn == false;
+      window.location.href = this.apiUrl + ":" + this.apiPort + "/api/authentication/signin";
+    } else{
+      console.log(error.message);
+    }
+  }
+
 }
+
+
+
 
 interface IGetUserInfoResponse{
   response: {

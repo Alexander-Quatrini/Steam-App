@@ -10,6 +10,7 @@
     <div>
       <h5>Logged in as {{currentSteamUser.personaname}}</h5>
       <img src="{{currentSteamUser.avatarfull}}"/>
+      <app-game-list [steamID]="steamID" [sessionID]="sessionID"></app-game-list>
     </div>
   </ng-template>
 </div>
