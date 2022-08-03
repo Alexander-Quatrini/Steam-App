@@ -53,4 +53,30 @@ public class SteamController: ControllerBase{
     }
         return BadRequest();
     }
+
+    [HttpPost]
+    [Route("getgamelist")]
+    public async Task<IActionResult> GetGameList([FromBody] JsonElement data)
+    {
+        var ID = data.GetString("steamID");
+        var sessionID = data.GetString("sessionID");
+
+        if(!Object.Equals(ID, null) && !Object.Equals(sessionID, null)){
+            Guid.TryParse(sessionID, out Guid guid);
+            if(_handler.ValidateSession(ID, guid)){
+                var url = API_URL + "/IPlayerService/GetOwnedGames/v0001/?key="+API_KEY+"&steamid="+ID+"&include_appinfo=true";
+
+                HttpResponseMessage message = await _client.GetAsync(url);
+                if(message.IsSuccessStatusCode)
+                {
+                    var content = await message.Content.ReadAsStringAsync();
+                    return Ok(content);
+                }
+
+            return StatusCode(500);
+        }
+        return Unauthorized();
+    }
+        return BadRequest();
+    }
 }

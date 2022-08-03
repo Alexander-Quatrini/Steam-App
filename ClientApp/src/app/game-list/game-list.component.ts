@@ -21,7 +21,9 @@ export class GameListComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.http.post(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {steamID: this.steamID, sessionID: this.sessionID}).toPromise().then(data => console.log(data));
+    var n = this.steamID.lastIndexOf('/');
+    var IDSub = this.steamID.substring(n + 1);
+    this.http.post(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {steamID: IDSub, sessionID: this.sessionID}).toPromise().then(data => console.log(data));
   }
 
 }
