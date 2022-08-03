@@ -34,7 +34,8 @@ public class AuthenticationHandler: OpenIdAuthenticationEvents{
                     _contextAccessor.HttpContext.Response.Cookies.Append("SteamID", steamID.Value, options);
                     Guid myuuid = Guid.NewGuid();
                     _contextAccessor.HttpContext.Response.Cookies.Append("SessionID", myuuid.ToString(), options);
-                    addValidSession(steamID.Value, myuuid);
+                    string steamIDToStore = steamID.Value.Substring(steamID.Value.LastIndexOf("/") + 1);
+                    addValidSession(steamIDToStore, myuuid);
 
                 }
             }
@@ -85,6 +86,7 @@ public class AuthenticationHandler: OpenIdAuthenticationEvents{
     */  
     public bool ValidateSession(string id, Guid uuid)
     {
+        validSessions.Select(item => item.Key + " " + item.Value).ToList().ForEach(Console.WriteLine);
         return (validSessions.Any(item => item.Key == id && item.Value.Equals(uuid)));
     }
 }

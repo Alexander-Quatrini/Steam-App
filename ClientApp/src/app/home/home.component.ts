@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
             this.loggedIn = true;
           })
           .catch(err => {
-            this.handleError(err);
+            //this.handleError(err);
           })      
       } else{
         this.loggedIn = false;
