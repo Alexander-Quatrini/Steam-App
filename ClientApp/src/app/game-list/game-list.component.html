@@ -1,1 +1,18 @@
-<p>game-list works!</p>
+<div class="container">
+    <h3>Game List For {{personaName}}</h3>
+    <h4>Game Count: {{gameListObject.game_count}}</h4>
+
+    <table>
+        <th>App ID</th>
+        <th>Game Name</th>
+        <th>Minutes Played</th>
+
+        <tr *ngFor="let item of currentGameList.games">
+
+            <td>{{item.appid}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.playtime_forever}}</td>
+        
+        </tr>
+    </table>
+</div>
