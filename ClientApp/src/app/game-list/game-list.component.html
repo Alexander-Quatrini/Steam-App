@@ -10,7 +10,7 @@
         <tr *ngFor="let item of currentGameList.games">
 
             <td>{{item.appid}}</td>
-            <td>{{item.name}}</td>
+            <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
             <td>{{item.playtime_forever}}</td>
         
         </tr>
