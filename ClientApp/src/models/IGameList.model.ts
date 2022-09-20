@@ -4,7 +4,7 @@ export interface IGameList{
         appid?: string,
         img_icon_url?: string,
         name?: string,
-        playtime_forever?: string,
+        playtime_forever?: number,
 
     }>;
 } 

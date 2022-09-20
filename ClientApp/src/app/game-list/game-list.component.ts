@@ -51,9 +51,13 @@ export class GameListComponent implements OnInit {
     var length = this.gameListObject.games.length;
     var items = pageNumber * 15 - 1 >= length ? 
     this.gameListObject.games.slice((pageNumber - 1) * 15) : 
-    this.gameListObject.games.slice((pageNumber - 1) * 15, pageNumber * 15 - 1);
+    this.gameListObject.games.slice((pageNumber - 1) * 15, pageNumber * 15);
 
-    return {game_count: length, games: items};
+    const editedItems = items.map(data => ({ ...data, playtime_forever: Math.trunc((data.playtime_forever ?? 0) / 60 * 10) / 10 }));
+
+    console.log(editedItems);
+
+    return {game_count: length, games: editedItems};
     }
 
     else{
