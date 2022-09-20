@@ -1,18 +1,25 @@
-<div class="container">
+
+<div *ngIf="!noGameList; else problem_loading">
+    <div class="container">
     <h3>Game List For {{personaName}}</h3>
     <h4>Game Count: {{gameListObject.game_count}}</h4>
 
-    <table class="table table-dark table-striped table-hover table-bordered">
-        <th>App ID</th>
-        <th>Game Name</th>
-        <th>Hours Played</th>
+        <table class="table table-dark table-striped table-hover table-bordered">
+            <th>App ID</th>
+            <th>Game Name</th>
+            <th>Hours Played</th>
 
-        <tr *ngFor="let item of currentGameList.games">
+            <tr *ngFor="let item of currentGameList.games">
 
-            <td>{{item.appid}}</td>
-            <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-            <td>{{item.playtime_forever}}</td>
+                <td>{{item.appid}}</td>
+                <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
+                <td>{{item.playtime_forever}}</td>
         
-        </tr>
-    </table>
+            </tr>
+        </table>
+    </div>
 </div>
+
+<ng-template #problem_loading> 
+    <div class="my-5 p-3 border-start border-warning bg-dark"><p><b>There was a problem loading this Steam profile's game list.</b>   Ensure the profile has its visibility set to public.</p></div>
+</ng-template>
