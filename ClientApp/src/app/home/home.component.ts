@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   steamCookieName: string = Constants.steamCookieName;
   sessionIDCookieName: string = Constants.sessionIdName;
   currentSteamUser: IUserInfo = {};
+  loadingError: boolean = false;
   constructor (private http: HttpClient)
   {
     
@@ -49,7 +50,7 @@ export class HomeComponent implements OnInit {
             this.loggedIn = true;
           })
           .catch(err => {
-            //this.handleError(err);
+            this.loadingError = true;
           })      
       } else{
         this.loggedIn = false;
