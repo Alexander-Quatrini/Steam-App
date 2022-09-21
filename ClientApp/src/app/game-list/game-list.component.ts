@@ -26,7 +26,7 @@ export class GameListComponent implements OnInit {
   gameListObject: IGameList = {};
   noGameList: boolean = false;
   gamesPerPage: number = 15;
-
+  currentPage: number = 1;
   currentGameList: IGameList = {};
 
   constructor(private http: HttpClient) { }
@@ -38,7 +38,7 @@ export class GameListComponent implements OnInit {
       this.gameListObject = data.response;
       console.log(this.gameListObject);
       this.numberOfPages =  this.gameListObject.game_count == undefined ? 0 : Math.trunc(this.gameListObject.game_count / this.gamesPerPage) + 1;
-      this.currentGameList = this.getPageOfItems(1);
+      this.currentGameList = this.getPageOfItems(this.currentPage);
     }).catch(error => {
       console.log(error);
       this.noGameList = true;
