@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { GameListComponent } from '../game-list/game-list.component';
 
 
-
 @NgModule({
   declarations: [
     ImageCarouselComponent,
