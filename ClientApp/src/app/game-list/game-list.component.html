@@ -1,10 +1,9 @@
 
 <div *ngIf="!noGameList; else problem_loading">
     <div class="container">
-        <h3>Game List For {{personaName}}</h3>
-        <h4>Game Count: {{gameListObject.game_count}}</h4>
+        <h3 class="text-center">Game List For {{personaName}}</h3>
 
-            <p class="text-muted float-end">Showing games {{currentPage * 15 + 1}}-{{(currentPage+1) * 15}}</p>
+            <p class="text-muted float-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{currentPage * 15}} of {{currentGameList.game_count}}</p>
             <table class="table table-dark table-bordered">
                 <th>App ID</th>
                 <th>Game Name</th>
@@ -18,7 +17,7 @@
         
                 </tr>
             </table>
-        <nav aria-details="Game List Pages">
+        <nav aria-details="Game List Navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item {{currentPage==1 ? 'disabled' : ''}}"><a class="page-link" 
                     (click)="currentPage = currentPage - 1; currentGameList = getPageOfItems(currentPage)">Previous</a></li>
