@@ -70,6 +70,11 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options":{
+            "sslKey": "%APPDATA%/ASP.NET/https/%npm_package_name%.key",
+            "sslCert": "%APPDATA%/ASP.NET/https/%npm_package_name%.pem",
+            "ssl": true
+          },
           "configurations": {
             "production": {
               "browserTarget": "Steam_App:build:production"

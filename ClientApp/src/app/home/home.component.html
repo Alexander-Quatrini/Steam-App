@@ -1,32 +1,28 @@
 <div class="container">
-  <div *ngIf="!loggedIn else homePage">
+  <div *ngIf="!loggedIn && !loading">
     <h2>Don't know what game to play? <br/>
       <small class="text-muted">The Boy Os got you covered.</small>
     </h2>
     <h4><a [routerLink]="['/login']">Login to your Steam account to get started.</a></h4>
     <app-image-carousel></app-image-carousel>
-
-  <ng-container *ngIf="!loadingError && currentSteamUser.personaname == undefined">
+  </div>
+  
+  <ng-container *ngIf="loading">
     <div class="my-5 p-3 border-start border-info bg-dark">
       <b class="display-5">Fetching Steam profile...</b>
       <div class="lds-ring center float-end"><div></div><div></div><div></div><div></div></div>
     </div>
   </ng-container>
 
-  </div>
-
-  <ng-template #homePage>
-
-    <ng-container *ngIf="!loadingError; else loadingErrorComponent">
+  <ng-container *ngIf="!loadingError && loggedIn">
       <div>
         <h5>Logged in as {{currentSteamUser.personaname}}</h5>
         <img src="{{currentSteamUser.avatarfull}}"/>
         <app-game-list [steamID]="steamID" [sessionID]="sessionID" [personaName]="currentSteamUser.personaname"></app-game-list>
       </div>
-    </ng-container>
-  </ng-template>
+  </ng-container>
 
-  <ng-template #loadingErrorComponent>
+  <ng-template *ngIf="loadingError">
     <div class="my-5 p-3 border-start border-warning bg-dark">
       <p><b>There was a problem loading this Steam profile's game list.</b></p>
     </div>

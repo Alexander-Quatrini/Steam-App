@@ -36,6 +36,7 @@ public class AuthenticationController: ControllerBase{
         Guid.TryParse(guid, out Guid sessionID);
         
         if(!Object.Equals(id,null) && !Object.Equals(sessionID,null)){
+            id = id.Substring(id.LastIndexOf('/')+1);
             //Check if session exists, if it does invalidate it.
             if(_handler.invalidateSessionWithId(id, sessionID)){
                 return SignOut(new AuthenticationProperties { RedirectUri = "/"}, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -18,6 +18,8 @@ export class HomeComponent implements OnInit {
   sessionIDCookieName: string = Constants.sessionIdName;
   currentSteamUser: IUserInfo = {};
   loadingError: boolean = false;
+  loading: boolean = false;
+
   constructor (private http: HttpClient)
   {
     
@@ -39,18 +41,21 @@ export class HomeComponent implements OnInit {
         var n = this.steamID.lastIndexOf('/');
         var IDSub = this.steamID.substring(n + 1);
           this.sessionID = getCookie(this.sessionIDCookieName);
+          this.loading = true;
           this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub, SessionID: this.sessionID})
           .toPromise().then(content => 
           {
             var response = content.response.players[0];
             this.currentSteamUser.personaname = response.personaname;
             this.currentSteamUser.avatarfull = response.avatarfull;
-
-            console.log(response);
             this.loggedIn = true;
+            console.log(response);
+            
           })
           .catch(err => {
             this.loadingError = true;
+          }).finally(()=>{
+            this.loading = false;
           })      
       } else{
         this.loggedIn = false;
