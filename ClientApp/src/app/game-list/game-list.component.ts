@@ -31,7 +31,7 @@ export class GameListComponent implements OnInit {
   currentPage: number = 1;
   currentGameList: IGameList = {};
 
-  linkArray = [].constructor(this.paginationLinks);
+  linkArray: number[] = [];
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -40,7 +40,10 @@ export class GameListComponent implements OnInit {
     this.http.post<IGetGameListResponse>(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {steamID: IDSub, sessionID: this.sessionID}).toPromise().then(data => {
       this.gameListObject = data.response;
       console.log(this.gameListObject);
-      this.numberOfPages =  this.gameListObject.game_count == undefined ? 0 : Math.trunc(this.gameListObject.game_count / this.gamesPerPage) + 1;
+      this.numberOfPages = this.gameListObject.game_count == undefined ? 0 : Math.trunc(this.gameListObject.game_count / this.gamesPerPage) + 1;
+
+      this.linkArray = [].constructor(this.numberOfPages <= this.paginationLinks ? this.numberOfPages : this.paginationLinks);
+
       this.currentGameList = this.getPageOfItems(this.currentPage);
     }).catch(error => {
       console.log(error);
@@ -60,35 +63,39 @@ export class GameListComponent implements OnInit {
 
     console.log(editedItems);
 
-    let half = Math.trunc(this.paginationLinks/2);
+    if(this.numberOfPages <= this.paginationLinks){
+      this.linkArray = [...Array(this.linkArray.length).keys()].map(x => ++x);
+    }
+    else{
+      let half = Math.trunc(this.paginationLinks/2);
 
-    let currentIndex = 0;
-    for(let i = -half; currentIndex < this.linkArray.length; i++)
-    {
-      
-      console.log(i);
-      let numberForIndex = pageNumber + i;
-      if( numberForIndex <= 0)
+      let currentIndex = 0;
+      for(let i = -half; currentIndex < this.linkArray.length; i++)
       {
-        numberForIndex = this.linkArray.length + i + 1;
-      } else
+      
+        console.log(i);
+        let numberForIndex = pageNumber + i;
+        if( numberForIndex <= 0)
+        {
+          numberForIndex = this.linkArray.length + i + 1;
+        } else
 
-      if( numberForIndex > this.numberOfPages){
-        numberForIndex = i - this.linkArray.length;
+        if( numberForIndex > this.numberOfPages){
+          numberForIndex = i - this.linkArray.length;
+        }
+
+        this.linkArray[currentIndex] = numberForIndex;
+        currentIndex++;
       }
 
-      this.linkArray[currentIndex] = numberForIndex;
-      currentIndex++;
+      this.linkArray.sort((a: number,b: number) => {
+        if(a < b)
+          return -1;
+        if(a > b)
+          return 1;
+        return 0;
+      });
     }
-
-    this.linkArray.sort((a: number,b: number) => {
-      if(a < b)
-        return -1;
-      if(a > b)
-        return 1;
-      return 0;
-    });
-
     console.log(this.linkArray);
 
     return {game_count: length, games: editedItems};
