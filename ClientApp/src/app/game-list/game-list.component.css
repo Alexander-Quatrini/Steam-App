@@ -32,3 +32,7 @@
     background-color: #333;
     color: #ccc;
 }
+
+.hidden{
+    display: none;
+}

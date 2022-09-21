@@ -18,13 +18,13 @@
                 </tr>
             </table>
         <nav aria-details="Game List Navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item {{currentPage==1 ? 'disabled' : ''}}"><a class="page-link" 
-                    (click)="currentPage = 1; currentGameList = getPageOfItems(currentPage)">First</a></li>
+            <ul class="pagination pagination-lg justify-content-center">
+                <li class="page-item {{currentPage==1 ? 'disabled hidden' : ''}}"><a class="page-link" 
+                    (click)="currentPage = 1; currentGameList = getPageOfItems(currentPage)">First (1)</a></li>
                 <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
                     <a class="page-link" (click)="currentPage = n; currentGameList = getPageOfItems(currentPage)">{{n}}</a></li>
-                <li class="page-item {{currentPage==numberOfPages ? 'disabled' : ''}}"><a class="page-link" 
-                    (click)="currentPage = numberOfPages; currentGameList = getPageOfItems(currentPage)">Last</a></li>
+                <li class="page-item {{currentPage==numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
+                    (click)="currentPage = numberOfPages; currentGameList = getPageOfItems(currentPage)">Last ({{numberOfPages}})</a></li>
             </ul>
         </nav>
     </div>
