@@ -81,7 +81,7 @@ export class GameListComponent implements OnInit {
         } else
 
         if( numberForIndex > this.numberOfPages){
-          numberForIndex = i - this.linkArray.length;
+          numberForIndex -= this.linkArray.length;
         }
 
         this.linkArray[currentIndex] = numberForIndex;
