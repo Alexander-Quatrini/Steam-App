@@ -27,3 +27,8 @@
     background-color: white !Important;
     border: solid 1px white;
 }
+
+.pagination > li.disabled > a{
+    background-color: #333;
+    color: #ccc;
+}
