@@ -42,13 +42,13 @@ export class HomeComponent implements OnInit {
         var IDSub = this.steamID.substring(n + 1);
           this.sessionID = getCookie(this.sessionIDCookieName);
           this.loading = true;
+          this.loggedIn = true;
           this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub, SessionID: this.sessionID})
           .toPromise().then(content => 
           {
             var response = content.response.players[0];
             this.currentSteamUser.personaname = response.personaname;
             this.currentSteamUser.avatarfull = response.avatarfull;
-            this.loggedIn = true;
             console.log(response);
             
           })

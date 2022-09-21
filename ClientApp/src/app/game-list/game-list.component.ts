@@ -22,6 +22,8 @@ export class GameListComponent implements OnInit {
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
 
+
+  paginationLinks: number = 5;
   numberOfPages: number = 0;
   gameListObject: IGameList = {};
   noGameList: boolean = false;
@@ -29,6 +31,7 @@ export class GameListComponent implements OnInit {
   currentPage: number = 1;
   currentGameList: IGameList = {};
 
+  linkArray = [].constructor(this.paginationLinks);
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -56,6 +59,37 @@ export class GameListComponent implements OnInit {
     const editedItems = items.map(data => ({ ...data, playtime_forever: Math.trunc((data.playtime_forever ?? 0) / 60 * 10) / 10 }));
 
     console.log(editedItems);
+
+    let half = Math.trunc(this.paginationLinks/2);
+
+    let currentIndex = 0;
+    for(let i = -half; currentIndex < this.linkArray.length; i++)
+    {
+      
+      console.log(i);
+      let numberForIndex = pageNumber + i;
+      if( numberForIndex <= 0)
+      {
+        numberForIndex = this.linkArray.length + i + 1;
+      } else
+
+      if( numberForIndex > this.numberOfPages){
+        numberForIndex = i - this.linkArray.length;
+      }
+
+      this.linkArray[currentIndex] = numberForIndex;
+      currentIndex++;
+    }
+
+    this.linkArray.sort((a: number,b: number) => {
+      if(a < b)
+        return -1;
+      if(a > b)
+        return 1;
+      return 0;
+    });
+
+    console.log(this.linkArray);
 
     return {game_count: length, games: editedItems};
     }
