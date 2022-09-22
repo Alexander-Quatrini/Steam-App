@@ -34,6 +34,7 @@ export class GameListComponent implements OnInit {
   currentPage: number = 1;
   currentGameList: IGameList = {};
   descendingOnNext: boolean = false;
+  loading: boolean = true;
 
   linkArray: number[] = [];
   constructor(private http: HttpClient, private pagination: PaginationService) {
@@ -43,6 +44,7 @@ export class GameListComponent implements OnInit {
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
     this.http.post<IGetGameListResponse>(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {steamID: IDSub, sessionID: this.sessionID}).toPromise().then(data => {
+      this.loading = false;
       this.gameListObject = data.response;
       console.log(this.gameListObject);
 
