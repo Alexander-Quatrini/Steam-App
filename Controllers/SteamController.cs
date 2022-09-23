@@ -34,37 +34,11 @@ public class SteamController: ControllerBase{
     [Route("getuserinfo")]
     public async Task<IActionResult> GetUserInfo([FromBody] JsonElement data)
     {
-            var test = data.GetString("ID");
-            var uuid = data.GetString("SessionID");
-    if(!Object.Equals(test, null) && !Object.Equals(uuid, null)){
-        Guid.TryParse(uuid, out Guid guid);
-        if(_handler.ValidateSession(test, guid)){
-            var url = API_URL + "ISteamUser/GetPlayerSummaries/v0002/?key="+API_KEY+"&steamids="+test;
-            HttpResponseMessage message = await _client.GetAsync(url);
-                if(message.IsSuccessStatusCode)
-                {
-                    var content = await message.Content.ReadAsStringAsync();
-                    return Ok(content);
-                }
+        var ID = ValidateSession(data);
 
-            return StatusCode(500);
-        }
-        return Unauthorized();
-    }
-        return BadRequest();
-    }
-
-    [HttpPost]
-    [Route("getgamelist")]
-    public async Task<IActionResult> GetGameList([FromBody] JsonElement data)
-    {
-        var ID = data.GetString("steamID");
-        var sessionID = data.GetString("sessionID");
-
-        if(!Object.Equals(ID, null) && !Object.Equals(sessionID, null)){
-            Guid.TryParse(sessionID, out Guid guid);
-            if(_handler.ValidateSession(ID, guid)){
-                var url = API_URL + "/IPlayerService/GetOwnedGames/v0001/?key="+API_KEY+"&steamid="+ID+"&include_appinfo=true";
+            if(!ID.Equals("")){
+            
+                var url = API_URL + "ISteamUser/GetPlayerSummaries/v0002/?key="+API_KEY+"&steamids="+ID;
 
                 HttpResponseMessage message = await _client.GetAsync(url);
                 if(message.IsSuccessStatusCode)
@@ -74,9 +48,52 @@ public class SteamController: ControllerBase{
                 }
 
             return StatusCode(500);
-        }
-        return Unauthorized();
+            }
+
+            return Unauthorized();
     }
-        return BadRequest();
+
+    [HttpPost]
+    [Route("getgamelist")]
+    public async Task<IActionResult> GetGameList([FromBody] JsonElement data)
+    {
+        var ID = ValidateSession(data);
+
+            if(!ID.Equals("")){
+            
+                var url = API_URL + "/IPlayerService/GetOwnedGames/v0001/?key="+API_KEY+"&steamid="+ID+"&include_appinfo=true&include_played_free_games=true";
+
+                HttpResponseMessage message = await _client.GetAsync(url);
+                if(message.IsSuccessStatusCode)
+                {
+                    var content = await message.Content.ReadAsStringAsync();
+                    return Ok(content);
+                }
+
+            return StatusCode(500);
+            }
+
+            return Unauthorized();
+    }
+
+    [HttpPost]
+    [Route("getfriendslist")]
+
+    public async Task<IActionResult> GetFriendsList([FromBody] JsonElement data)
+    {
+        return Ok();   
+    }
+
+    private string ValidateSession(JsonElement data)
+    {
+        var test = data.GetString("ID");
+        var uuid = data.GetString("SessionID");
+        
+        if(!Object.Equals(test, null) && !Object.Equals(uuid, null)){
+            Guid.TryParse(uuid, out Guid guid);
+            return _handler.ValidateSession(test, guid) ? test : "";
+        }
+
+        return "";
     }
 }
