@@ -36,7 +36,7 @@ public class SteamController: ControllerBase{
     {
         var ID = ValidateSession(data);
 
-            if(!ID.Equals("")){
+            if(!ID.Equals(string.Empty)){
             
                 var url = API_URL + "ISteamUser/GetPlayerSummaries/v0002/?key="+API_KEY+"&steamids="+ID;
 
@@ -59,7 +59,7 @@ public class SteamController: ControllerBase{
     {
         var ID = ValidateSession(data);
 
-            if(!ID.Equals("")){
+            if(!ID.Equals(string.Empty)){
             
                 var url = API_URL + "/IPlayerService/GetOwnedGames/v0001/?key="+API_KEY+"&steamid="+ID+"&include_appinfo=true&include_played_free_games=true";
 
@@ -77,11 +77,26 @@ public class SteamController: ControllerBase{
     }
 
     [HttpPost]
-    [Route("getfriendslist")]
-
-    public async Task<IActionResult> GetFriendsList([FromBody] JsonElement data)
+    [Route("getfriendlist")]
+    public async Task<IActionResult> GetFriendList([FromBody] JsonElement data)
     {
-        return Ok();   
+         var ID = ValidateSession(data);
+
+            if(!ID.Equals(string.Empty)){
+            
+                var url = API_URL + "/ISteamUser/GetFriendList/v0001/?key="+API_KEY+"&steamid="+ID+"&relationship=all";
+
+                HttpResponseMessage message = await _client.GetAsync(url);
+                if(message.IsSuccessStatusCode)
+                {
+                    var content = await message.Content.ReadAsStringAsync();
+                    return Ok(content);
+                }
+
+            return StatusCode(500);
+            }
+
+            return Unauthorized();  
     }
 
     private string ValidateSession(JsonElement data)
@@ -91,9 +106,9 @@ public class SteamController: ControllerBase{
         
         if(!Object.Equals(test, null) && !Object.Equals(uuid, null)){
             Guid.TryParse(uuid, out Guid guid);
-            return _handler.ValidateSession(test, guid) ? test : "";
+            return _handler.ValidateSession(test, guid) ? test : string.Empty;
         }
 
-        return "";
+        return string.Empty;
     }
 }

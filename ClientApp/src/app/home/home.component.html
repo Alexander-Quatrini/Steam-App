@@ -20,6 +20,7 @@
         <img src="{{currentSteamUser.avatarfull}}"/>
         <h3 class="text-center">Game List For {{currentSteamUser.personaname}}</h3>
         <app-game-list [steamID]="steamID" [sessionID]="sessionID"></app-game-list>
+        <app-friends-list [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="10"></app-friends-list>
       </div>
   </ng-container>
 

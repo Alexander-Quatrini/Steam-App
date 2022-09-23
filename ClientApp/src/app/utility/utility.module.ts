@@ -4,12 +4,14 @@ import { ImageCarouselComponent } from '../image-carousel/image-carousel.compone
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { GameListComponent } from '../game-list/game-list.component';
+import { FriendsListComponent } from './friends-list/friends-list.component';
 
 
 @NgModule({
   declarations: [
     ImageCarouselComponent,
-    GameListComponent
+    GameListComponent,
+    FriendsListComponent
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { GameListComponent } from '../game-list/game-list.component';
   ],
   exports:[
     ImageCarouselComponent,
-    GameListComponent
+    GameListComponent,
+    FriendsListComponent
   ]
 })
 export class UtilityModule { }
