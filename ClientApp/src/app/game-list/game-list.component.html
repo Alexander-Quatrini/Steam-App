@@ -15,12 +15,14 @@
                 <th (click)="sortList('appid', false)" [innerText]="appIDString"></th>
                 <th (click)="sortList('gamename', false)" [innerText]="gameNameString"></th>
                 <th (click)="sortList('playtime', false)" [innerText]="playtimeString"></th>
+                <th class="store-page-header">Store Page</th>
 
                 <tr *ngFor="let item of currentGameList.games">
 
                     <td>{{item.appid}}</td>
                     <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
                     <td>{{item.playtime_forever}}</td>
+                    <td class="text-start"><a class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
         
                 </tr>
             </table>

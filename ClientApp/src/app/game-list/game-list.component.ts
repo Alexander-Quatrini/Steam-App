@@ -63,6 +63,14 @@ export class GameListComponent implements OnInit {
     });
   }
 
+  redirectToStorePage(appid: string | undefined)
+  {
+    if(typeof appid == undefined){
+      window.alert("Store page could not be found.");
+    }
+    window.open("https://store.steampowered.com/app/" + appid, "_blank");
+  }
+
   sortList(key: string, descending: boolean): void{
 
     this.appIDString = "App ID";

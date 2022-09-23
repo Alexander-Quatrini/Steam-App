@@ -36,3 +36,12 @@
 .hidden{
     display: none;
 }
+
+a.link{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.table-link{
+    background-color: transparent;
+}
