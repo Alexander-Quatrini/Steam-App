@@ -13,6 +13,10 @@ export class LoginComponent{
 
   constructor(private http: HttpClient) {}
 
+  ngOnInit(): void{
+    this.steamSignIn();
+  }
+
   steamSignIn(){
     //var steamID = getCookie(this.steamCookieName);
     

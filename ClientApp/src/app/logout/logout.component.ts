@@ -21,7 +21,11 @@ export class LogoutComponent implements OnInit {
     console.log(steamID + " " + sessionID);
 
     this.http.post(this.apiUrl + ":" + this.apiPort + "/api/authentication/signout", {ID: steamID, sessionID: sessionID})
-    .toPromise().then(resp=> window.location.href = "/");
+    .toPromise().then(resp=> window.location.href = "/").catch(err=> {
+      document.cookie = Constants.steamCookieName+"=;expires=" + new Date(0).toUTCString();
+      document.cookie = Constants.sessionIdName+"=;expires=" + new Date(0).toUTCString();
+      window.location.href = "/";
+    });
 
     document.cookie = Constants.steamCookieName+"=;expires=" + new Date(0).toUTCString();
     document.cookie = Constants.sessionIdName+"=;expires=" + new Date(0).toUTCString();

@@ -26,7 +26,8 @@ import { UtilityModule } from './utility/utility.module';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'login', component: LoginComponent},
-      { path: 'logout', component: LogoutComponent}
+      { path: 'logout', component: LogoutComponent},
+      { path: '**', redirectTo: ''},
     ], {onSameUrlNavigation: 'reload'}),
     UtilityModule
   ],
