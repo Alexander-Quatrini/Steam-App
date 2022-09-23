@@ -1,7 +1,7 @@
 <div class="container">
   <div *ngIf="!loggedIn && !loading">
     <h2>Don't know what game to play? <br/>
-      <small class="text-muted">The Boy Os got you covered.</small>
+      <small class="text-muted">The Boy-Os got you covered.</small>
     </h2>
     <h4><a [routerLink]="['/login']">Login to your Steam account to get started.</a></h4>
     <app-image-carousel></app-image-carousel>
@@ -18,7 +18,8 @@
       <div>
         <h5>Logged in as {{currentSteamUser.personaname}}</h5>
         <img src="{{currentSteamUser.avatarfull}}"/>
-        <app-game-list [steamID]="steamID" [sessionID]="sessionID" [personaName]="currentSteamUser.personaname"></app-game-list>
+        <h3 class="text-center">Game List For {{currentSteamUser.personaname}}</h3>
+        <app-game-list [steamID]="steamID" [sessionID]="sessionID"></app-game-list>
       </div>
   </ng-container>
 

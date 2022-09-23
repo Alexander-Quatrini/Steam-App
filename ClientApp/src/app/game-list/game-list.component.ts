@@ -21,9 +21,6 @@ export class GameListComponent implements OnInit {
   @Input()
   sessionID: string = "";
 
-  @Input()
-  personaName?: string = "";
-
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
 
