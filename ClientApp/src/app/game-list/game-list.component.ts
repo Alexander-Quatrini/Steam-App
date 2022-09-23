@@ -35,6 +35,9 @@ export class GameListComponent implements OnInit {
   currentGameList: IGameList = {};
   descendingOnNext: boolean = false;
   loading: boolean = true;
+  appIDString: string = "App ID";
+  gameNameString: string = "Game Title";
+  playtimeString: string = "Hours Played";
 
   linkArray: number[] = [];
   constructor(private http: HttpClient, private pagination: PaginationService) {
@@ -60,9 +63,15 @@ export class GameListComponent implements OnInit {
   }
 
   sortList(key: string, descending: boolean): void{
+
+    this.appIDString = "App ID";
+    this.gameNameString = "Game Title";
+    this.playtimeString = "Hours Played";
+
     switch (key) {
       case Constants.APP_ID_KEY:
         if(!Object.is(this.gameListObject, {})){
+          this.appIDString = "App ID \u25B2";
           this.gameListObject.games?.sort((a,b) =>{
 
             let first = parseInt(a.appid ?? "0");
@@ -77,13 +86,16 @@ export class GameListComponent implements OnInit {
             return 0;
           })
 
-          if(descending)
+          if(descending){
             this.gameListObject.games?.reverse();
+            this.appIDString = "App ID \u25BE";
+          }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
         break;
       case Constants.GAME_NAME_KEY:
         if(!Object.is(this.gameListObject, {})){
+          this.gameNameString = "Game Title \u25B2";
           this.gameListObject.games?.sort((a,b) => 
           {
             let first = a.name ?? "";
@@ -92,18 +104,23 @@ export class GameListComponent implements OnInit {
             return first.localeCompare(second);
           });
           
-          if(descending)
+          if(descending){
             this.gameListObject.games?.reverse();
-          
+            this.gameNameString = "Game Title \u25BE";
+          }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
         break;
       case Constants.PLAYTIME_KEY:
         if(!Object.is(this.gameListObject, {})){
+          this.playtimeString = "Hours Played \u25B2";
           this.gameListObject.games?.sort((a,b) =>{
 
             let first = a.playtime_forever ?? "0"
             let second = b.playtime_forever ?? "0"
+
+            let firstName = a.name ?? "";
+            let secondName = b.name ?? "";
 
             if(first < second)
               return -1;
@@ -111,12 +128,13 @@ export class GameListComponent implements OnInit {
             if(first > second)
               return 1;
 
-            return 0;
+            return firstName.localeCompare(secondName);
           })
           
-          if(descending)
+          if(descending){
             this.gameListObject.games?.reverse();
-
+            this.gameNameString = "Hours Played \u25BE";
+          }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
 

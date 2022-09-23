@@ -1,6 +1,6 @@
 
 <div *ngIf="!noGameList; else problem_loading">
-    <div class="container">
+    <div class="container-fluid">
         <h3 class="text-center">Game List For {{personaName}}</h3>
 
         <ng-container *ngIf="loading">
@@ -11,10 +11,10 @@
         </ng-container>
 
             <p class="text-muted float-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{currentPage * 15}} of {{currentGameList.game_count}}</p>
-            <table class="table table-dark table-bordered min-vh-100">
-                <th (click)="sortList('appid', false)">App ID</th>
-                <th (click)="sortList('gamename', false)">Game Name &#9650;</th>
-                <th (click)="sortList('playtime', false)">Hours Played</th>
+            <table class="table table-dark table-bordered">
+                <th (click)="sortList('appid', false)" [innerText]="appIDString"></th>
+                <th (click)="sortList('gamename', false)" [innerText]="gameNameString"></th>
+                <th (click)="sortList('playtime', false)" [innerText]="playtimeString"></th>
 
                 <tr *ngFor="let item of currentGameList.games">
 
