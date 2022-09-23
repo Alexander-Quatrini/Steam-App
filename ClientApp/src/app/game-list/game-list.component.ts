@@ -33,11 +33,12 @@ export class GameListComponent implements OnInit {
   gamesPerPage: number = 15;
   currentPage: number = 1;
   currentGameList: IGameList = {};
-  descendingOnNext: boolean = false;
   loading: boolean = true;
   appIDString: string = "App ID";
   gameNameString: string = "Game Title";
   playtimeString: string = "Hours Played";
+  previousKey: string = "";
+  descendingToggle: boolean = false;
 
   linkArray: number[] = [];
   constructor(private http: HttpClient, private pagination: PaginationService) {
@@ -68,6 +69,12 @@ export class GameListComponent implements OnInit {
     this.gameNameString = "Game Title";
     this.playtimeString = "Hours Played";
 
+    if(this.previousKey == key){                  //TODO: Find better implementation, too confusing.
+      descending = !this.descendingToggle;
+      this.descendingToggle = !this.descendingToggle;
+    }
+    else
+      descending = false;
     switch (key) {
       case Constants.APP_ID_KEY:
         if(!Object.is(this.gameListObject, {})){
@@ -133,7 +140,7 @@ export class GameListComponent implements OnInit {
           
           if(descending){
             this.gameListObject.games?.reverse();
-            this.gameNameString = "Hours Played \u25BE";
+            this.playtimeString = "Hours Played \u25BE";
           }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
@@ -143,6 +150,8 @@ export class GameListComponent implements OnInit {
       default:
         break;
     }
+
+    this.previousKey = key;
   }
 
   getPageOfItems(pageNumber: number): IGameList{
