@@ -18,7 +18,7 @@ Front end is not complete, but back end structure is present.
 
 3. Create a json file in the Steam-App directory, call it <code>appsettings.Development.json</code>
 
-4. Make a JSON Object (replace <code>X</code> with a valid Steam API key).
+4. In <code>appsettings.Development.json</code>, make a JSON Object (replace <code>X</code> with a valid Steam API key):
 
 <code>{ "SteamKey": X }</code>
 
