@@ -103,7 +103,7 @@ export class GameListComponent implements OnInit {
 
           if(descending){
             this.gameListObject.games?.reverse();
-            this.appIDString = "App ID \u25BE";
+            this.appIDString = "App ID \u25BC";
           }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
@@ -121,7 +121,7 @@ export class GameListComponent implements OnInit {
           
           if(descending){
             this.gameListObject.games?.reverse();
-            this.gameNameString = "Game Title \u25BE";
+            this.gameNameString = "Game Title \u25BC";
           }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
@@ -148,7 +148,7 @@ export class GameListComponent implements OnInit {
           
           if(descending){
             this.gameListObject.games?.reverse();
-            this.playtimeString = "Hours Played \u25BE";
+            this.playtimeString = "Hours Played \u25BC";
           }
           this.currentGameList = this.getPageOfItems(this.currentPage);
         }
