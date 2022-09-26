@@ -30,9 +30,8 @@ In the former, run <code>dotnet run</code> and in the latter <code>npm start</co
 
 # Progress
 
-State of webpage when logged in as of 9/22/2022:
+State of webpage when logged in as of 9/26/2022:
 
-![9-22-22-steam-app](https://user-images.githubusercontent.com/17236535/191805034-eeb246f3-1d98-4b94-8283-20f53c919a66.png)
-
+![9-26-22-steam-app](https://user-images.githubusercontent.com/17236535/192356414-b4ecb3b7-41de-4f5a-9ddd-23e1e35ed8a4.png)
 
 
