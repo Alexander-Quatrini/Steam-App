@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { IUserInfo } from 'src/models/IUserInfo.model';
+import { IUserInfo, IGetUserInfoResponse } from 'src/models/IUserInfo.model';
 import { Constants } from '../util/constants.util';
 import { getCookie } from '../util/cookie.util';
 @Component({
@@ -71,13 +71,4 @@ export class HomeComponent implements OnInit {
     }
   }
 
-}
-
-
-
-
-interface IGetUserInfoResponse{
-  response: {
-    players: IUserInfo[];
-  }
 }

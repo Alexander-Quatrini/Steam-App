@@ -8,3 +8,9 @@ export interface IUserInfo{
     avatarmedium?: string,
     avatarfull?: string
 }
+
+export interface IGetUserInfoResponse{
+    response: {
+      players: IUserInfo[];
+    }
+}

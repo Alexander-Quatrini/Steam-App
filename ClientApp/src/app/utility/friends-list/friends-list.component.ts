@@ -17,7 +17,7 @@ export class FriendsListComponent implements OnInit {
   sessionID: string = "";
 
   @Input()
-  maxFriendsToShow: number = 10;
+  maxFriendsToShow: number = 12;
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
@@ -33,7 +33,7 @@ export class FriendsListComponent implements OnInit {
 
     this.http.post<IFriendListResponse>(this.API_URL+":"+this.API_PORT+"/api/steam/getfriendlist", {ID: id, SessionID: this.sessionID}).toPromise().then(data =>
     {
-      this.friendList = data.friendslist.friends.slice(0, this.maxFriendsToShow - 1);
+      this.friendList = data.friendslist.friends.slice(0, this.maxFriendsToShow);
     });
   }
 

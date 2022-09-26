@@ -1,9 +1,19 @@
-<ul *ngFor="let item of friendList" class="list-group w-25">
+
+<div class="container-fluid text-start w-100 my-5">
     
-    <li class="list-group-item  bg-dark text-white">
-        <div>
-            <img class="friend-image" src="../../../assets/ImageCarousel/src1.jpg"/>
-            <p>{{item.steamid}}</p>
-        </div>
-    </li>
-</ul>
+    <h3 class="text-start">Friends List</h3>
+
+    <ul *ngFor="let item of friendList" class="list-group d-inline-block w-auto m-auto">
+        
+        <li class="list-group-item  bg-dark text-white d-inline-block">
+            <div class="row text-center">
+                <div class="col-3">
+                    <img class="friend-image col-9" src="../../../assets/ImageCarousel/src1.jpg"/>
+                </div>
+                <div class="col-9">
+                    <p class="col-3">{{item.steamid}}</p>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

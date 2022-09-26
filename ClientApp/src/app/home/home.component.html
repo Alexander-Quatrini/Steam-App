@@ -18,9 +18,10 @@
       <div>
         <h5>Logged in as {{currentSteamUser.personaname}}</h5>
         <img src="{{currentSteamUser.avatarfull}}"/>
-        <h3 class="text-center">Game List For {{currentSteamUser.personaname}}</h3>
-        <app-game-list [steamID]="steamID" [sessionID]="sessionID"></app-game-list>
-        <app-friends-list [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="10"></app-friends-list>
+        <div class="row">
+          <app-game-list class="col-8" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname"></app-game-list>
+          <app-friends-list class="col-4" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="12"></app-friends-list>
+        </div>
       </div>
   </ng-container>
 
