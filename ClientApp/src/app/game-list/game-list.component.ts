@@ -39,6 +39,7 @@ export class GameListComponent implements OnInit {
   playtimeString: string = "Hours Played";
   previousKey: string = "";
   descendingToggle: boolean = false;
+  math = Math;
 
   linkArray: number[] = [];
   constructor(private http: HttpClient, private pagination: PaginationService) {

@@ -1,6 +1,6 @@
 
 <div *ngIf="!noGameList; else problem_loading">
-    <div class="container-fluid my-5">
+    <div class="container-fluid w-100 my-5">
 
         <ng-container *ngIf="loading">
             <div class="my-5 p-3 border-start border-info bg-dark">
@@ -26,7 +26,7 @@
                 </tr>
             </table>
             
-            <p class="text-muted text-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{currentPage * 15}} of {{currentGameList.game_count}}</p>
+            <p class="text-muted text-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
 
         <nav aria-details="Game List Navigation">
             <ul class="pagination pagination-lg justify-content-center">
