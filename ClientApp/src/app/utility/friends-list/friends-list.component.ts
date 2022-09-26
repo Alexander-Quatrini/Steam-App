@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
+import { GameListService } from 'src/app/services/game-list-service.service';
 import { Constants } from 'src/app/util/constants.util';
 import { IFriend } from 'src/models/IFriend.model';
 import { IGetUserInfoResponse, IUserInfo } from 'src/models/IUserInfo.model';
@@ -7,7 +8,8 @@ import { IGetUserInfoResponse, IUserInfo } from 'src/models/IUserInfo.model';
 @Component({
   selector: 'app-friends-list',
   templateUrl: './friends-list.component.html',
-  styleUrls: ['./friends-list.component.css']
+  styleUrls: ['./friends-list.component.css'],
+  providers:[]
 })
 export class FriendsListComponent implements OnInit {
 
@@ -26,7 +28,7 @@ export class FriendsListComponent implements OnInit {
   friendList: IFriend[] = [];
   friendListInfo: IUserInfo[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private listService: GameListService) { }
 
   ngOnInit(): void {
 
@@ -46,6 +48,10 @@ export class FriendsListComponent implements OnInit {
         this.friendListInfo = data.response.players;
       })
     })
+  }
+
+  addFriendToGameList(ID?: string, name?: string): void {
+    this.listService.addUser({steamid: ID, personaname: name});
   }
 
 }

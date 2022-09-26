@@ -1,7 +1,7 @@
 
 <div class="container-fluid text-start w-100 my-5">
     
-    <h3 class="text-start">Friends List</h3>
+    <h3 class="text-start">Friends</h3>
 
     <ul *ngFor="let item of friendListInfo" class="list-group">
         
@@ -10,8 +10,11 @@
                 <div class="col-3">
                     <img class="friend-image col-9" src="{{item.avatarmedium}}"/>
                 </div>
-                <div class="col-9">
+                <div class="col-8">
                     <p>{{item.personaname}}</p>
+                </div>
+                <div class="col-1">
+                    <a (click)="addFriendToGameList(item.steamid, item.personaname)" class="link link-info friend-link" href="#">+</a>
                 </div>
             </div>
         </li>

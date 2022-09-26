@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
 import { IGameList } from 'src/models/IGameList.model';
+import { IUserInfo } from 'src/models/IUserInfo.model';
+import { GameListService } from '../services/game-list-service.service';
 import { PaginationService } from '../services/pagination.service';
 import { Constants } from '../util/constants.util';
 
@@ -10,7 +12,7 @@ import { Constants } from '../util/constants.util';
   styleUrls: ['./game-list.component.css'],
   providers: 
   [
-    PaginationService,
+    PaginationService
   ]
 })
 export class GameListComponent implements OnInit {
@@ -22,7 +24,7 @@ export class GameListComponent implements OnInit {
   sessionID: string = "";
 
   @Input()
-  personaname?: string = "";
+  personaname: string = "";
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
@@ -39,10 +41,11 @@ export class GameListComponent implements OnInit {
   playtimeString: string = "Hours Played";
   previousKey: string = "";
   descendingToggle: boolean = false;
+  currentUsers: IUserInfo[] = [];
   math = Math;
 
   linkArray: number[] = [];
-  constructor(private http: HttpClient, private pagination: PaginationService) {
+  constructor(private http: HttpClient, private pagination: PaginationService, private listService: GameListService) {
    }
 
   ngOnInit(): void {
@@ -51,6 +54,13 @@ export class GameListComponent implements OnInit {
     this.http.post<IGetGameListResponse>(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {ID: IDSub, SessionID: this.sessionID}).toPromise().then(data => {
       this.loading = false;
       this.gameListObject = data.response;
+      this.listService.addUser({steamid: IDSub, personaname: this.personaname});
+      this.listService.getList().subscribe((x =>
+        {
+          this.currentUsers = x.map(y => { return y; });
+        }
+        ));
+
       console.log(this.gameListObject);
 
       this.gameListObject.games = this.gameListObject.games?.map(data => ({ ...data, playtime_forever: Math.trunc((data.playtime_forever ?? 0) / 60 * 10) / 10 }));
@@ -171,10 +181,7 @@ export class GameListComponent implements OnInit {
     this.gameListObject.games.slice((pageNumber - 1) * 15) : 
     this.gameListObject.games.slice((pageNumber - 1) * 15, pageNumber * 15);
 
-    
-
     this.linkArray = this.pagination.updateLinkArray(pageNumber);
-
     return {game_count: length, games: items};
     }
 
@@ -182,7 +189,6 @@ export class GameListComponent implements OnInit {
       return {};
     }
   }
-
 }
 
 interface IGetGameListResponse{

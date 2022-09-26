@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { UtilityModule } from './utility/utility.module';
+import { GameListService } from './services/game-list-service.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { UtilityModule } from './utility/utility.module';
     ], {onSameUrlNavigation: 'reload'}),
     UtilityModule
   ],
-  providers: [],
+  providers: [ GameListService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
