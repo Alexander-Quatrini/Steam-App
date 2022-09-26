@@ -35,10 +35,19 @@ public class SteamController: ControllerBase{
     public async Task<IActionResult> GetUserInfo([FromBody] JsonElement data)
     {
         var ID = ValidateSession(data);
-
+        var url = API_URL + "ISteamUser/GetPlayerSummaries/v0002/?key="+API_KEY+"&steamids=";
+        JsonElement jElement = new JsonElement();
             if(!ID.Equals(string.Empty)){
-            
-                var url = API_URL + "ISteamUser/GetPlayerSummaries/v0002/?key="+API_KEY+"&steamids="+ID;
+                
+                if(data.TryGetProperty("AdditionalIDs", out jElement)){
+                    Console.WriteLine(jElement.ToString());
+                    string[] IDs= JsonSerializer.Deserialize<string[]>(jElement) ?? Array.Empty<string>();
+                    IDs.ToList().ForEach(x => {
+                        url += x + ",";
+                    });
+                } else{
+                    url += ID;
+                }
 
                 HttpResponseMessage message = await _client.GetAsync(url);
                 if(message.IsSuccessStatusCode)
