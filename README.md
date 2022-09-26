@@ -32,4 +32,4 @@ In the former, run <code>dotnet run</code> and in the latter <code>npm start</co
 
 State of webpage when logged in as of 9/26/2022:
 
-
+![9-26-22-steam-app](https://user-images.githubusercontent.com/17236535/192356770-f1e63f68-09a4-45e7-8cfb-42d2950db84a.png)
