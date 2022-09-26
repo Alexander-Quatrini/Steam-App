@@ -78,6 +78,6 @@ export class HomeComponent implements OnInit {
 
 interface IGetUserInfoResponse{
   response: {
-    players: IUserInfo[]
+    players: IUserInfo[];
   }
 }

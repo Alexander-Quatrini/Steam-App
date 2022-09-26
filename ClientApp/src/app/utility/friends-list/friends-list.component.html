@@ -1,1 +1,9 @@
-<p>friends-list works!</p>
+<ul *ngFor="let item of friendList" class="list-group w-25">
+    
+    <li class="list-group-item  bg-dark text-white">
+        <div>
+            <img class="friend-image" src="../../../assets/ImageCarousel/src1.jpg"/>
+            <p>{{item.steamid}}</p>
+        </div>
+    </li>
+</ul>
