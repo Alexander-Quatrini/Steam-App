@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { UtilityModule } from './utility/utility.module';
 import { GameListService } from './services/game-list-service.service';
+import { PersonaService } from './services/persona.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { GameListService } from './services/game-list-service.service';
     ], {onSameUrlNavigation: 'reload'}),
     UtilityModule
   ],
-  providers: [ GameListService ],
+  providers: [ GameListService,
+  PersonaService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

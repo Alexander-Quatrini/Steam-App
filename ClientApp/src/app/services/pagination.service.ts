@@ -12,10 +12,15 @@ export class PaginationService {
   private maxLinks: number = 0;
   constructor() {}
 
-  init(maxLinks: number, itemsPerPage: number, totalItems: number): void{
+  update(maxLinks: number, itemsPerPage: number, totalItems: number): void{
       this.maxLinks = maxLinks;
       this.totalItems = totalItems;
+      
       this.numberPages = Math.trunc(this.totalItems / itemsPerPage) + 1;
+
+      if(this.totalItems % itemsPerPage == 0)
+        this.numberPages--;
+        
       this.linkArray = [].constructor(this.numberPages <= this.maxLinks ? this.numberPages : this.maxLinks);
   }
 

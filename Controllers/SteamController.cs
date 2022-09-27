@@ -67,9 +67,8 @@ public class SteamController: ControllerBase{
     public async Task<IActionResult> GetGameList([FromBody] JsonElement data)
     {
         var ID = ValidateSession(data);
-
             if(!ID.Equals(string.Empty)){
-            
+                ID = data.GetString("gameListID") ?? ID;
                 var url = API_URL + "/IPlayerService/GetOwnedGames/v0001/?key="+API_KEY+"&steamid="+ID+"&include_appinfo=true&include_played_free_games=true";
 
                 HttpResponseMessage message = await _client.GetAsync(url);
@@ -113,6 +112,9 @@ public class SteamController: ControllerBase{
         var test = data.GetString("ID");
         var uuid = data.GetString("SessionID");
         
+        Console.WriteLine(test);
+        Console.WriteLine(uuid);
+
         if(!Object.Equals(test, null) && !Object.Equals(uuid, null)){
             Guid.TryParse(uuid, out Guid guid);
             return _handler.ValidateSession(test, guid) ? test : string.Empty;

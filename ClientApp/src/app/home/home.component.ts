@@ -47,10 +47,7 @@ export class HomeComponent implements OnInit {
           .toPromise().then(content => 
           {
             var response = content.response.players[0];
-            this.currentSteamUser.personaname = response.personaname;
-            this.currentSteamUser.avatarfull = response.avatarfull;
-            console.log(response);
-            
+            this.currentSteamUser = response;
           })
           .catch(err => {
             this.loadingError = true;

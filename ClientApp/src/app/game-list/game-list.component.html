@@ -17,6 +17,7 @@
                 <th class="pointer" (click)="sortList('appid', false)" [innerText]="appIDString"></th>
                 <th class="pointer" (click)="sortList('gamename', false)" [innerText]="gameNameString"></th>
                 <th class="pointer" (click)="sortList('playtime', false)" [innerText]="playtimeString"></th>
+                <th class="pointer">Owned By:</th>
                 <th class="store-page-header">Store Page</th>
 
                 <tr *ngFor="let item of currentGameList.games">
@@ -24,6 +25,9 @@
                     <td>{{item.appid}}</td>
                     <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
                     <td>{{item.playtime_forever}}</td>
+                    <div>
+                        <img *ngFor="let user of currentUsers" class="d-inline" src="{{user.avatar}}"/>
+                    </div>
                     <td class="text-start"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
         
                 </tr>
@@ -34,11 +38,11 @@
         <nav aria-details="Game List Navigation">
             <ul class="pagination pagination-lg justify-content-center">
                 <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
-                    (click)="currentPage = 1; currentGameList = getPageOfItems(currentPage)">First (1)</a></li>
+                    (click)="currentPage = 1; changePage(currentPage)">First (1)</a></li>
                 <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
-                    <a class="page-link" (click)="currentPage = n; currentGameList = getPageOfItems(currentPage)">{{n}}</a></li>
+                    <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a></li>
                 <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
-                    (click)="currentPage = numberOfPages; currentGameList = getPageOfItems(currentPage)">Last ({{numberOfPages}})</a></li>
+                    (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a></li>
             </ul>
         </nav>
     </div>
