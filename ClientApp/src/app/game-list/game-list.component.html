@@ -2,52 +2,53 @@
 <div *ngIf="!noGameList; else problem_loading">
     <div class="container-fluid w-100 my-5">
 
-        <ng-container *ngIf="loading">
+        <ng-container *ngIf="loading == true; else game_list">
             <div class="my-5 p-3 border-start border-info bg-dark">
-                <b class="display-5">Fetching Game List...</b>
+                <b class="display-5">Updating Game List...</b>
                 <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
             </div>
         </ng-container>
 
-        <h3 class="text-center d-inline">Game List For</h3>
-        <h3 class="d-inline" *ngFor="let item of currentUsers">
-            {{item.personaname + " "}} 
-        </h3>
-            <table class="table table-dark table-bordered">
-                <th class="pointer" (click)="sortList('appid', false)" [innerText]="appIDString"></th>
-                <th class="pointer" (click)="sortList('gamename', false)" [innerText]="gameNameString"></th>
-                <th class="pointer" (click)="sortList('playtime', false)" [innerText]="playtimeString"></th>
-                <th class="pointer">Owned By:</th>
-                <th class="store-page-header">Store Page</th>
+        <ng-template #game_list>
 
+            <h3 class="text-center d-inline">Game List For</h3>
+            <h3 class="d-inline" *ngFor="let item of currentUsers">
+                {{item.personaname + " "}} 
+            </h3>
+            <table class="table table-dark">
+                <th class="pointer border-bottom text-center" (click)="sortList('appid', false)" [innerText]="appIDString"></th>
+                <th class="pointer border-bottom text-center" (click)="sortList('gamename', false)" [innerText]="gameNameString"></th>
+                <th class="border-bottom text-center">Owned By:</th>
+                <th class="store-page-header border-bottom text-center">Store Page</th>
+                
                 <tr *ngFor="let item of currentGameList.games">
-
+                    
                     <td>{{item.appid}}</td>
                     <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-                    <td>{{item.playtime_forever}}</td>
                     <div>
-                        <img *ngFor="let user of currentUsers" class="d-inline" src="{{user.avatar}}"/>
+                        <td class="table-data"*ngFor="let user of item.owner?.split(' ')">{{user}}</td>
                     </div>
-                    <td class="text-start"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
-        
+                    <td class="text-center"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
+                    
                 </tr>
             </table>
             
             <p class="text-muted text-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
-
-        <nav aria-details="Game List Navigation">
-            <ul class="pagination pagination-lg justify-content-center">
-                <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
-                    (click)="currentPage = 1; changePage(currentPage)">First (1)</a></li>
-                <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
-                    <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a></li>
-                <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
-                    (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a></li>
-            </ul>
-        </nav>
+            
+            <nav aria-details="Game List Navigation">
+                <ul class="pagination pagination-lg justify-content-center">
+                    <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
+                        (click)="currentPage = 1; changePage(currentPage)">First (1)</a></li>
+                        <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
+                            <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a></li>
+                            <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
+                                (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a></li>
+                            </ul>
+            </nav>
+        </ng-template>
     </div>
 </div>
-
+                
 <ng-template #problem_loading> 
     <div class="my-5 p-3 border-start border-warning bg-dark">
         <p><b>There was a problem loading this Steam profile's game list.</b>   Ensure the profile has its visibility set to public.</p>
