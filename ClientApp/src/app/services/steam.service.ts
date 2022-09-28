@@ -69,4 +69,15 @@ export class SteamService {
       })
     });
   }
+
+  logout(): Promise<void>{
+    return new Promise((resolve,reject) => {
+      this.http.post(this.apiUrl + ":" + this.apiPort + "/api/steam/signout", {ID: this.steamID, SessionID: this.sessionID})
+      .toPromise().then(content => {
+        resolve();
+      }).catch(error => {
+        reject(error);
+      })
+    });
+  }
 }
