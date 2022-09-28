@@ -12,5 +12,5 @@ export interface IGame{
     img_icon_url?: string,
     name?: string,
     playtime_forever?: number,
-    owner?: string,
+    owner: string[],
 }

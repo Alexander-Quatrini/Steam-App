@@ -61,6 +61,7 @@ export class GameListComponent implements OnInit {
         this.listService.init(x, this.gameListObject);
 
         this.getPageOfItems(this.currentPage).then(data => {
+          this.sortList(Constants.APP_ID_KEY, false);
           this.currentGameList = data;
           this.loading = false;
         });

@@ -11,12 +11,12 @@ export class GameListService {
   private users: BehaviorSubject<IUserInfo[]>;
   private gameList: BehaviorSubject<IGameList>;
   private fullGameList: IGameList;
-  private map: BehaviorSubject<Map<string,string>>;
-
+  private map: BehaviorSubject<Map<string,string[]>>;
+  private updatedList: Map<string,IGame> = new Map<string,IGame>();
   constructor() { 
     this.users = new BehaviorSubject<IUserInfo[]>([]);
     this.gameList = new BehaviorSubject<IGameList>({});
-    this.map = new BehaviorSubject<Map<string,string>>(new Map<string, string>());
+    this.map = new BehaviorSubject<Map<string,string[]>>(new Map<string, string[]>());
     this.fullGameList = {};
     this.fullGameList.game_count = 0;
     this.fullGameList.games = [];
@@ -28,6 +28,9 @@ export class GameListService {
       this.users.next(this.users.value);  
     }
     this.gameList.value.games = list.games;
+    list.games?.map(game =>{
+      game.owner = [steamuser.avatar ?? ""];
+    })
     this.fullGameList = {game_count: list.games?.length, games: list.games};
 
   }
@@ -37,30 +40,39 @@ export class GameListService {
       this.users.value.push(steamuser);
       this.users.next(this.users.value);  
     }
-
+    list.games?.map(game => {
+      game.owner = [steamuser.avatar ?? ""];
+    })
     this.fullGameList.games = this.fullGameList.games?.concat(list.games ?? []);
 
-    //https://stackoverflow.com/questions/33850412/merge-javascript-objects-in-array-with-same-key
-    let updatedList: IGame[] = [];
+    //https://stackoverflow.com/questions/33850412/merge-javascript-objects-in-array-with-same-key 
     this.fullGameList.games?.forEach(originalGame =>{
-
-      var existing = updatedList.filter((value) => {
-        return originalGame.appid == value.appid;
-      });
-
-      if(existing.length){
-        var existingIndex = updatedList.indexOf(existing[0]);
-        updatedList[existingIndex].owner += ", " + originalGame.owner;
+      if(typeof originalGame.appid !== 'undefined'){
+      let existingGame = this.updatedList.get(originalGame.appid ?? "");
+      if(typeof existingGame !== 'undefined'){
+          let existingOwners = existingGame.owner;
+          originalGame.owner.forEach(original => {
+            existingOwners.push(original);
+          })
+          if(typeof existingOwners !== 'undefined'){
+            this.updatedList.set(originalGame.appid, {...existingGame, owner: existingOwners});
+          } else {
+            this.updatedList.set(originalGame.appid, {...existingGame, owner: originalGame.owner});
+          }
       } else{
-        updatedList.push(originalGame);
-        
+          this.updatedList.set(originalGame.appid, originalGame);
       }
-    });
+    }
+  });
+    
+    this.updatedList.forEach((value, key) => {
+      console.log("Key: "  + key + " Value: " + value);
+    })
 
     this.gameList.next(
       {
-        game_count: updatedList.length,
-        games:updatedList,
+        game_count: this.updatedList.size,
+        games: Array.from(this.updatedList.values()),
       })
     
     this.filterList();
@@ -76,21 +88,16 @@ export class GameListService {
 
   filterList(): void{
 
-    let tempMap = new Map<string,string>();
+    let tempMap = new Map<string,string[]>();
 
-    this.fullGameList.games?.forEach(entry => {
+    this.gameList.value.games?.forEach(entry => {
 
-      if(typeof entry.name === 'string'){
-        if(!tempMap.has(entry.name)){
-          tempMap.set(entry.name, entry.owner ?? "null");
-        } else{
-          let prevValue = tempMap.get(entry.name) ?? "";
-          tempMap.set(entry.name, prevValue + ", " + entry.owner);
-        }
+      if(typeof entry.name === 'string' && typeof entry.owner !== 'undefined'){
+        tempMap.set(entry.name, entry.owner);
       }
 
       tempMap.forEach((value, key) => {
-        if(value.split(',').length != this.users.value.length)
+        if(value.length != this.users.value.length)
         {
           tempMap.delete(key);
         }
@@ -108,7 +115,7 @@ export class GameListService {
     return this.gameList.asObservable();
   }
 
-  getFilteredGameList(): Observable<Map<string,string>>{
+  getFilteredGameList(): Observable<Map<string,string[]>>{
     return this.map.asObservable();
   }
 }
