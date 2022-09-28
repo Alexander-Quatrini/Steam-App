@@ -1,8 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { IUserInfo, IGetUserInfoResponse } from 'src/models/IUserInfo.model';
+import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
 import { getCookie } from '../util/cookie.util';
+import { handleError } from '../util/errorHandle.util';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -20,7 +22,7 @@ export class HomeComponent implements OnInit {
   loadingError: boolean = false;
   loading: boolean = false;
 
-  constructor (private http: HttpClient)
+  constructor (private http: HttpClient, private steamService: SteamService)
   {
     
   }
@@ -43,29 +45,18 @@ export class HomeComponent implements OnInit {
           this.sessionID = getCookie(this.sessionIDCookieName);
           this.loading = true;
           this.loggedIn = true;
-          this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: IDSub, SessionID: this.sessionID})
-          .toPromise().then(content => 
-          {
-            var response = content.response.players[0];
-            this.currentSteamUser = response;
-          })
-          .catch(err => {
-            this.loadingError = true;
-          }).finally(()=>{
+          this.steamService.init(IDSub, this.sessionID);
+          this.steamService.getSteamUserFromID(IDSub).then(content =>{
+            this.currentSteamUser = content;
+          }).catch((error: HttpErrorResponse) => {
+            this.loggedIn = false;
+            handleError(error);
+          }).finally(() => {
             this.loading = false;
-          })      
-      } else{
+          })     
+      }else{
         this.loggedIn = false;
       }
-  }
- 
-  handleError(error: HttpErrorResponse): void{
-    if(error.status == 401){
-      this.loggedIn == false;
-      window.location.href = this.apiUrl + ":" + this.apiPort + "/api/authentication/signin";
-    } else{
-      console.log(error.message);
-    }
   }
 
 }

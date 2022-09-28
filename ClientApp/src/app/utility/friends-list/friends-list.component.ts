@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
 import { GameListService } from 'src/app/services/game-list-service.service';
-import { PersonaService } from 'src/app/services/persona.service';
+import { SteamService } from 'src/app/services/steam.service';
 import { Constants } from 'src/app/util/constants.util';
-import { IFriend } from 'src/models/IFriend.model';
+import { IFriend, IFriendListResponse } from 'src/models/IFriend.model';
 import { IGameList, IGetGameListResponse } from 'src/models/IGameList.model';
 import { IGetUserInfoResponse, IUserInfo } from 'src/models/IUserInfo.model';
 
@@ -30,7 +30,7 @@ export class FriendsListComponent implements OnInit {
   friendList: IFriend[] = [];
   friendListInfo: IUserInfo[] = [];
 
-  constructor(private http: HttpClient, private listService: GameListService, private personaService: PersonaService) { }
+  constructor(private http: HttpClient, private listService: GameListService, private personaService: SteamService) { }
 
   ngOnInit(): void {
 
@@ -63,16 +63,10 @@ export class FriendsListComponent implements OnInit {
       gameList.games = data.response.games;
       gameList.games?.map(entry => {entry.owner = friendID; entry.playtime_forever = Math.trunc((entry.playtime_forever ?? 0) / 60 * 10) / 10});
 
-      this.personaService.getSteamUserFromID(friendID ?? "", this.sessionID, id).then(x => {
+      this.personaService.getSteamUserFromID(friendID ?? "").then(x => {
         this.listService.addUser(x, gameList);
       }).catch(err => console.log(err));
     });
   }
 
-}
-
-interface IFriendListResponse{
-  friendslist: {
-    friends: IFriend[];
-  }
 }

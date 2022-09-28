@@ -4,7 +4,7 @@ import { IGameList, IGetGameListResponse } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { GameListService } from '../services/game-list-service.service';
 import { PaginationService } from '../services/pagination.service';
-import { PersonaService } from '../services/persona.service';
+import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
 
 @Component({
@@ -48,7 +48,7 @@ export class GameListComponent implements OnInit {
   filter: boolean = false;
   linkArray: number[] = [];
 
-  constructor(private http: HttpClient, private pagination: PaginationService, private listService: GameListService, private personaService: PersonaService) {}
+  constructor(private http: HttpClient, private pagination: PaginationService, private listService: GameListService, private personaService: SteamService) {}
 
   ngOnInit(): void {
     var n = this.steamID.lastIndexOf('/');
@@ -58,7 +58,7 @@ export class GameListComponent implements OnInit {
       this.gameListObject = data.response;
       this.gameListObject.games?.map(entry => {entry.owner = IDSub});
       this.loading = false;
-      this.personaService.getSteamUserFromID(IDSub, this.sessionID, IDSub).then(x => {
+      this.personaService.getSteamUserFromID(IDSub).then(x => {
         this.listService.init(x, this.gameListObject);
         
         //TODO: problems stem from not using one singular service to make API calls. 
