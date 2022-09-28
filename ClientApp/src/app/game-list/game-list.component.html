@@ -25,7 +25,7 @@
                     
                         <td>{{item.appid}}</td>
                         <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-                        <td *ngFor="let user of item.owner?.split(' ')"><p>{{user}}</p></td>
+                        <td><div class="every-other" *ngFor="let user of item.owner"><img src="{{user}}" height="25" width="25"/></div></td>
                         <td class="text-center"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
                     
                     </tr>

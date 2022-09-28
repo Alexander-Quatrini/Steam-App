@@ -45,3 +45,11 @@ a.link{
 a.table-link{
     background-color: transparent;
 }
+
+.every-other{
+    display: inline-block;
+}
+
+.every-other:nth-child(2) img{
+    display: inline;
+}
