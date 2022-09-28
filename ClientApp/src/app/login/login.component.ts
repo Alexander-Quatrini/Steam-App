@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 import { Constants } from '../util/constants.util';
 @Component({
   selector: 'app-login',
@@ -11,7 +10,7 @@ export class LoginComponent{
   apiPort = Constants.apiPort;
   apiUrl = Constants.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   ngOnInit(): void{
     this.steamSignIn();

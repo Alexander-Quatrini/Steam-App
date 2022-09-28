@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Constants } from '../util/constants.util';
 import { getCookie } from '../util/cookie.util';
 import { SteamService } from '../services/steam.service';
@@ -14,7 +13,7 @@ export class LogoutComponent implements OnInit {
   apiPort = Constants.apiPort;
   apiUrl = Constants.apiUrl;
 
-  constructor(private http: HttpClient, private steamService: SteamService) { }
+  constructor(private steamService: SteamService) { }
 
   ngOnInit(): void {
     var steamID = getCookie(Constants.steamCookieName);

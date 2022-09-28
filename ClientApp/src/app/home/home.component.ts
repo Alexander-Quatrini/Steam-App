@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { IUserInfo, IGetUserInfoResponse } from 'src/models/IUserInfo.model';
+import { IUserInfo } from 'src/models/IUserInfo.model';
 import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
 import { getCookie } from '../util/cookie.util';
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   loadingError: boolean = false;
   loading: boolean = false;
 
-  constructor (private http: HttpClient, private steamService: SteamService)
+  constructor (private steamService: SteamService)
   {
     
   }

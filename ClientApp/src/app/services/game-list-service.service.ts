@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IGameList } from 'src/models/IGameList.model';
-import { IGame } from 'src/models/IGame.model';
+import { IGameList, IGame } from 'src/models/IGameList.model';
 
 @Injectable({
   providedIn: 'root'
