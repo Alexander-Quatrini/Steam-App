@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   loggedIn: boolean = false;
   steamCookieName: string = Constants.steamCookieName;
   sessionIDCookieName: string = Constants.sessionIdName;
-  currentSteamUser: IUserInfo = {};
+  currentSteamUser: IUserInfo = {steamid: ""};
   loadingError: boolean = false;
   loading: boolean = false;
 

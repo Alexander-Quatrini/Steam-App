@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
-import { IGameList, IGetGameListResponse } from 'src/models/IGameList.model';
+import { IGameList } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { GameListService } from '../services/game-list-service.service';
 import { PaginationService } from '../services/pagination.service';
@@ -47,32 +46,28 @@ export class GameListComponent implements OnInit {
   math = Math;
   filter: boolean = false;
   linkArray: number[] = [];
+  gameListActive: boolean = false;
 
-  constructor(private http: HttpClient, private pagination: PaginationService, private listService: GameListService, private personaService: SteamService) {}
+  constructor(private pagination: PaginationService, private listService: GameListService, private steamService: SteamService) {}
 
   ngOnInit(): void {
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
-    this.http.post<IGetGameListResponse>(this.API_URL+":"+this.API_PORT+"/api/steam/getgamelist", {ID: IDSub, SessionID: this.sessionID}).toPromise().then(data => {
+    this.steamService.getGameListFromID(IDSub).then(data => {
    
-      this.gameListObject = data.response;
-      this.gameListObject.games?.map(entry => {entry.owner = IDSub});
-      this.loading = false;
-      this.personaService.getSteamUserFromID(IDSub).then(x => {
+      this.gameListObject = data;
+      this.gameListActive = true;
+      this.steamService.getSteamUserFromID(IDSub).then(x => {
         this.listService.init(x, this.gameListObject);
-        
-        //TODO: problems stem from not using one singular service to make API calls. 
-    });
 
-      console.log(this.gameListObject);
-
-      this.gameListObject.games = this.gameListObject.games?.map(data => ({ ...data, playtime_forever: Math.trunc((data.playtime_forever ?? 0) / 60 * 10) / 10 }));
+        this.getPageOfItems(this.currentPage).then(data => {
+          this.currentGameList = data;
+          this.loading = false;
+        });
+      });
 
       this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
       this.numberOfPages = this.pagination.getNumberPages();
-      this.getPageOfItems(this.currentPage).then(data => {
-        this.currentGameList = data;
-      });
     }).catch(error => {
       console.log(error);
       this.noGameList = true;
@@ -85,11 +80,13 @@ export class GameListComponent implements OnInit {
     ));
 
     this.listService.getGameList().subscribe(gameList => {
+      this.loading = true;
       this.gameListObject = gameList; 
       this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
       this.numberOfPages = this.pagination.getNumberPages();
       this.getPageOfItems(this.currentPage).then(data => {
         this.currentGameList = data;
+        this.loading = false;
       });
     });
   }
@@ -207,7 +204,7 @@ export class GameListComponent implements OnInit {
 
   getPageOfItems(pageNumber: number): Promise<IGameList>{
     return new Promise((resolve, reject) =>{
-      if(this.gameListObject.games != undefined && !this.loading){
+      if(this.gameListObject.games != undefined){
         var length = this.pagination.getTotalItems();
         var items = pageNumber * 15 - 1 >= length ? 
         this.gameListObject.games.slice((pageNumber - 1) * 15) : 

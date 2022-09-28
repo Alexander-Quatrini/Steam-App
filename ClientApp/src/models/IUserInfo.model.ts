@@ -1,5 +1,5 @@
 export interface IUserInfo{
-    steamid?: string,
+    steamid: string,
     communityvisibilitystate?: number,
     profilestate?: number,
     personaname?: string,
