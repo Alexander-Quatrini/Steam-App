@@ -35,10 +35,10 @@ export class GameListService {
     list.games?.map(game => {
       game.owner = [steamuser.avatar ?? ""];
     })
-    this.fullGameList.games = this.fullGameList.games?.concat(list.games ?? []);
+    //this.fullGameList.games = this.fullGameList.games?.concat(list.games ?? []);
 
     //https://stackoverflow.com/questions/33850412/merge-javascript-objects-in-array-with-same-key 
-    this.fullGameList.games?.forEach(originalGame =>{
+    list.games?.forEach(originalGame =>{
       if(typeof originalGame.appid !== 'undefined'){
       let existingGame = this.updatedList.get(originalGame.appid ?? "");
       if(typeof existingGame !== 'undefined'){
