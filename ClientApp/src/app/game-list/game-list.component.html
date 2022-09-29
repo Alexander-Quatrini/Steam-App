@@ -22,27 +22,31 @@
                 <th class="store-page-header border-bottom text-center">Store Page</th>
                 <tbody>
                     <tr *ngFor="let item of currentGameList.games">
-                    
                         <td>{{item.appid}}</td>
                         <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
                         <td><div class="every-other" *ngFor="let user of item.owner"><img src="{{user}}" height="25" width="25"/></div></td>
-                        <td class="text-center"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
-                    
+                        <td class="text-center"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>    
                     </tr>
+                    
                 </tbody>
             </table>
             
-            <p class="text-muted text-end">Showing games {{(currentPage - 1) * 15 + 1}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
+            <p class="text-muted text-end">Showing games {{math.min((currentPage - 1) * 15 + 1, currentGameList.game_count ?? 0)}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
             
             <nav aria-details="Game List Navigation">
                 <ul class="pagination pagination-lg justify-content-center">
                     <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
-                        (click)="currentPage = 1; changePage(currentPage)">First (1)</a></li>
-                        <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
-                            <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a></li>
-                            <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
-                                (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a></li>
-                            </ul>
+                        (click)="currentPage = 1; changePage(currentPage)">First (1)</a>
+                    </li>
+                    
+                    <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
+                        <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a>
+                    </li>
+                        
+                    <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
+                            (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a>
+                    </li>
+                </ul>
             </nav>
         </ng-template>
     </div>

@@ -30,12 +30,13 @@ export class GameListComponent implements OnInit {
   API_URL = Constants.apiUrl;
 
   numberOfPages: number = 0;
-  gameListObject: IGameList = {};
+  gameListObject: IGameList = {games: [], game_count: 0};
   filteredGameListObject: IGameList = {};
+  unFilteredGameListObject: IGameList = {};
   noGameList: boolean = false;
   gamesPerPage: number = 15;
   currentPage: number = 1;
-  currentGameList: IGameList = {};
+  currentGameList: IGameList = {games: [], game_count: 0};
   loading: boolean = true;
   appIDString: string = "App ID";
   gameNameString: string = "Game Title";
@@ -44,7 +45,7 @@ export class GameListComponent implements OnInit {
   descendingToggle: boolean = false;
   currentUsers: IUserInfo[] = [];
   math = Math;
-  filter: boolean = false;
+  filter: boolean = true;
   linkArray: number[] = [];
   gameListActive: boolean = false;
 
@@ -53,6 +54,13 @@ export class GameListComponent implements OnInit {
   ngOnInit(): void {
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
+
+    this.listService.getUserList().subscribe((y => {
+        this.currentUsers = y;
+        console.log(this.currentUsers);
+      }
+    ));
+
     this.steamService.getGameListFromID(IDSub).then(data => {
    
       this.gameListObject = data;
@@ -64,7 +72,11 @@ export class GameListComponent implements OnInit {
           this.sortList(Constants.APP_ID_KEY, false);
           this.currentGameList = data;
           this.loading = false;
+        }).catch(reject => {
+          console.log(reject);
         });
+      }).catch(reject => {
+        console.log(reject);
       });
 
       this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
@@ -74,15 +86,21 @@ export class GameListComponent implements OnInit {
       this.noGameList = true;
     });
 
-    this.listService.getUserList().subscribe((y => {
-        this.currentUsers = y.map(z => {return z;});
-        console.log(this.currentUsers);        
-      }
-    ));
-
     this.listService.getGameList().subscribe(gameList => {
       this.loading = true;
-      this.gameListObject = gameList; 
+      this.unFilteredGameListObject = gameList; 
+      this.pagination.update(5, this.gamesPerPage, this.unFilteredGameListObject.game_count ?? 0);
+      this.numberOfPages = this.pagination.getNumberPages();
+      this.getPageOfItems(this.currentPage).then(data => {
+        this.currentGameList = data;
+        this.loading = false;
+      });
+    });
+
+    this.listService.getFilteredGameList().subscribe(filteredGameList => {
+      this.loading = true;
+      this.filteredGameListObject.games = Array.from(filteredGameList.keys());
+      this.filteredGameListObject.game_count = this.filteredGameListObject.games.length; 
       this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
       this.numberOfPages = this.pagination.getNumberPages();
       this.getPageOfItems(this.currentPage).then(data => {
@@ -90,6 +108,7 @@ export class GameListComponent implements OnInit {
         this.loading = false;
       });
     });
+
   }
 
   redirectToStorePage(appid: string | undefined)
@@ -144,8 +163,8 @@ export class GameListComponent implements OnInit {
           this.gameNameString = "Game Title \u25B2";
           this.gameListObject.games?.sort((a,b) => 
           {
-            let first = a.name ?? "";
-            let second = b.name ?? "";
+            let first: string = a.name ?? "";
+            let second: string = b.name ?? "";
             
             return first.localeCompare(second);
           });
@@ -203,8 +222,19 @@ export class GameListComponent implements OnInit {
     })
   }
 
+  changeGameList(filter: boolean){
+    if(filter){
+      this.gameListObject = this.filteredGameListObject;
+    } else {
+      this.gameListObject = this.unFilteredGameListObject;
+    }
+  }
+
   getPageOfItems(pageNumber: number): Promise<IGameList>{
     return new Promise((resolve, reject) =>{
+      
+      this.changeGameList(this.filter);
+
       if(this.gameListObject.games != undefined){
         var length = this.pagination.getTotalItems();
         var items = pageNumber * 15 - 1 >= length ? 
