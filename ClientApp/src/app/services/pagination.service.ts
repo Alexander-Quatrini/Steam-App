@@ -38,8 +38,6 @@ export class PaginationService {
 
   updateLinkArray(pageNumber: number): number[]{
 
-    console.log(this.maxLinks + " " + this.totalItems);
-
     if(this.numberPages <= this.maxLinks){
       this.linkArray = [...Array(this.linkArray.length).keys()].map(x => ++x);
     }
@@ -50,7 +48,6 @@ export class PaginationService {
       for(let i = -half; currentIndex < this.linkArray.length; i++)
       {
       
-        console.log(i);
         let numberForIndex = pageNumber + i;
         if( numberForIndex <= 0)
         {
@@ -73,7 +70,6 @@ export class PaginationService {
         return 0;
       });
     }
-    console.log(this.linkArray);
 
     return this.linkArray;
   }

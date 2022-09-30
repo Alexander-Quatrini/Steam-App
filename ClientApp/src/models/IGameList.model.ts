@@ -13,4 +13,5 @@ export interface IGame{
     name?: string,
     playtime_forever?: number,
     owner: string[],
+    expanded: boolean,
 }

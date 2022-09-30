@@ -57,7 +57,6 @@ export class GameListComponent implements OnInit {
 
     this.listService.getUserList().subscribe((y => {
         this.currentUsers = y;
-        console.log(this.currentUsers);
       }
     ));
 
@@ -68,7 +67,6 @@ export class GameListComponent implements OnInit {
         this.listService.init(id, this.gameListObject);
       })
       .then(() =>{
-        console.log("update1");
         this.updateGameList();
         this.gameListActive = true;
       })
@@ -84,7 +82,6 @@ export class GameListComponent implements OnInit {
         this.unFilteredGameListObject = gameList; 
 
         if(!this.filter && this.gameListActive){
-          console.log("update2");
           this.updateGameList();
         }
     });
@@ -95,10 +92,8 @@ export class GameListComponent implements OnInit {
         this.filteredGameListObject.games = games;
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
         
-        console.log(this.filteredGameListObject);
 
         if(this.filter && this.gameListActive){
-          console.log("update3");
           this.updateGameList();
         }
     });
@@ -212,13 +207,11 @@ export class GameListComponent implements OnInit {
   }
 
   updateGameList(event?: Event): void{
-    console.log("toggle")
     this.loading = true;
     
     if(typeof event === 'object'){
       this.filter = (event.target as HTMLInputElement).checked;
     }
-    console.log(this.filter);
     if(this.filter){
       this.gameListObject = this.filteredGameListObject;
     } else {
@@ -232,6 +225,13 @@ export class GameListComponent implements OnInit {
     this.loading = false;
   }
 
+  toggleExpanded(appid?: string){
+    let game = this.currentGameList.games?.find(x => x.appid == appid ?? undefined)
+    if(game){
+      game.expanded = !game.expanded;
+    }
+  }
+
   getPageOfItems(pageNumber: number): IGameList{
 
       if(this.gameListObject.games != undefined){
@@ -239,9 +239,8 @@ export class GameListComponent implements OnInit {
         var items = pageNumber * 15 - 1 >= length ? 
         this.gameListObject.games.slice((pageNumber - 1) * 15) : 
         this.gameListObject.games.slice((pageNumber - 1) * 15, pageNumber * 15);
-        console.log(items);
         this.linkArray = this.pagination.updateLinkArray(pageNumber);
-
+        items = items.map(item => {return ({...item, expanded: false})});
         return{games: items, game_count: length}
     }
     return {games: [], game_count: 0};

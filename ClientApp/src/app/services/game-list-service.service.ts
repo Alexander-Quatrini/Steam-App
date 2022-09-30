@@ -26,7 +26,6 @@ export class GameListService {
   }
 
   addUser(steamuser: IUserInfo, list: IGameList): void{
-    console.log(this.users.value);
     if(this.users.value.includes(steamuser) == false){
       this.users.value.push(steamuser);
       this.users.next(this.users.value);  

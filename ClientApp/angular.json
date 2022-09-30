@@ -107,7 +107,7 @@
               "bootstrap/css/bootstrap.min.css"
             ],
             "scripts": [
-              "bootstrap/js/bootstrap.min.js"
+              "bootstrap/js/bootstrap.bundle.min.js"
             ]
           }
         },

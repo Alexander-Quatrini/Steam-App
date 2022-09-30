@@ -65,7 +65,10 @@ export class SteamService {
     return new Promise((resolve,reject) => {
       this.http.post<IGetUserInfoResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getuserinfo", {ID: this.steamID, SessionID: this.sessionID, AdditionalIDs: id})
       .toPromise().then(content => {
-        resolve(content.response.players);
+        let toReturn = content.response.players.filter(user => {
+          return user.communityvisibilitystate == 3;
+        })
+        resolve(toReturn);
       }).catch(err =>{
         reject(err);
       })
