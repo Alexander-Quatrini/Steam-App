@@ -47,9 +47,11 @@ a.table-link{
 }
 
 .every-other{
-    display: inline-block;
+    width: auto;
+    max-width: 33%;
+    float: left;
 }
 
-.every-other:nth-child(2) img{
-    display: inline;
+.every-other:nth-child(3n + 1){
+    clear: left;
 }
