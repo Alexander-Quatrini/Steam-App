@@ -41,7 +41,7 @@ export class GameListComponent implements OnInit {
   appIDString: string = "App ID";
   gameNameString: string = "Game Title";
   playtimeString: string = "Hours Played";
-  previousKey: string = Constants.APP_ID_KEY;
+  previousKey: string = Constants.GAME_NAME_KEY;
   descendingToggle: boolean = true;
   currentUsers: IUserInfo[] = [];
   math = Math;
@@ -91,7 +91,6 @@ export class GameListComponent implements OnInit {
         let games = Array.from(filteredGameList.keys());
         this.filteredGameListObject.games = games;
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
-        
 
         if(this.filter && this.gameListActive){
           this.updateGameList();

@@ -50,9 +50,13 @@ export class FriendsListComponent implements OnInit {
   addFriendToGameList(friend: IUserInfo): void {
     
     var gameList: IGameList = {};
+    
 
     this.steamService.getGameListFromID(friend.steamid).then(data => {
       gameList = data;
+      gameList.games?.map(x => {
+        x.owners = [];
+      })
       this.listService.addUser(friend, gameList);
     });
   }

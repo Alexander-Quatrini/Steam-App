@@ -21,6 +21,9 @@ export class GameListService {
   }
 
   init(steamuser: IUserInfo, list: IGameList): void{
+    list.games?.map(game => {
+      game.owners = [];
+    })
     this.addUser(steamuser, list);
     this.fullGameList = {game_count: list.games?.length, games: list.games};
   }
@@ -31,7 +34,7 @@ export class GameListService {
       this.users.next(this.users.value);  
     
     list.games?.map(game => {
-      game.owner = [steamuser.avatar ?? ""];
+      game.owners.push({name: steamuser, playtime: game.playtime_forever ?? 0});
     })
     //this.fullGameList.games = this.fullGameList.games?.concat(list.games ?? []);
 
@@ -40,14 +43,16 @@ export class GameListService {
       if(typeof originalGame.appid !== 'undefined'){
       let existingGame = this.updatedList.get(originalGame.appid ?? "");
       if(typeof existingGame !== 'undefined'){
-          let existingOwners = existingGame.owner;
-          originalGame.owner.forEach(original => {
+          let existingOwners = existingGame.owners;
+          let playtime = existingGame.playtime_forever ?? 0;
+          originalGame.owners.forEach(original => {
             existingOwners.push(original);
+            playtime += original.playtime;
           })
           if(typeof existingOwners !== 'undefined'){
-            this.updatedList.set(originalGame.appid, {...existingGame, owner: existingOwners});
+            this.updatedList.set(originalGame.appid, {...existingGame, owners: existingOwners, playtime_forever: playtime});
           } else {
-            this.updatedList.set(originalGame.appid, {...existingGame, owner: originalGame.owner});
+            this.updatedList.set(originalGame.appid, {...existingGame, owners: originalGame.owners});
           }
       } else{
           this.updatedList.set(originalGame.appid, originalGame);
@@ -76,8 +81,9 @@ export class GameListService {
     let tempMap = new Map<IGame,string[]>();
 
     this.gameList.value.games?.forEach(entry => {
-      if(typeof entry.name === 'string' && typeof entry.owner !== 'undefined'){
-        tempMap.set(entry, entry.owner);
+      if(typeof entry.name === 'string' && typeof entry.owners !== 'undefined'){
+        let owners = entry.owners.map(x => {return x.name.steamid;});
+        tempMap.set(entry, owners);
       }
 
       tempMap.forEach((value, key) => {

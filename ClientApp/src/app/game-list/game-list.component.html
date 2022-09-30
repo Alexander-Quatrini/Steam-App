@@ -30,16 +30,17 @@
                         <ng-container id="accordion-parent" *ngFor="let item of currentGameList.games">
                             <tr class="pointer" (click)="toggleExpanded((item.appid))">
                                 <td>{{item.appid}}</td>
-                                <td><img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-                                <td><div class="every-other" *ngFor="let user of item.owner"><img src="{{user}}" height="25" width="25"/></div></td>
+                                <td><img src="https://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
+                                <td><div class="every-other" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="25" width="25"/></div></td>
                                 <td class="text-center align-middle"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
                                 <td class="text-center align-middle text-muted font-monospace">&#9654;</td>    
                             </tr>
                             <tr *ngIf="item.expanded" class="align-middle">
                                 <td class="my-5" colspan="5">
                                     <h5 class="text-center text-muted m-auto">{{item.name}}</h5>
-                                    <div>
-                                        <span class="every-other" *ngFor="let user of item.owner"><img src="{{user}}" height="40" width="40"/></span>
+                                    <div class="align-center">
+                                        <div class="every-other float-end" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="40" width="40"/></div>
+                                        <p class="mx-2">Combined playtime: {{item.playtime_forever}} hour(s).</p>
                                     </div>
                                 </td>
                             </tr>
