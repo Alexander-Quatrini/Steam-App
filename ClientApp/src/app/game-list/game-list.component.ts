@@ -30,7 +30,7 @@ export class GameListComponent implements OnInit {
   API_URL = Constants.apiUrl;
 
   numberOfPages: number = 0;
-  gameListObject: IGameList = {games: [], game_count: 0};
+  gameListObject: IGameList = {};
   filteredGameListObject: IGameList = {};
   unFilteredGameListObject: IGameList = {};
   noGameList: boolean = false;
@@ -41,11 +41,11 @@ export class GameListComponent implements OnInit {
   appIDString: string = "App ID";
   gameNameString: string = "Game Title";
   playtimeString: string = "Hours Played";
-  previousKey: string = "";
-  descendingToggle: boolean = false;
+  previousKey: string = Constants.APP_ID_KEY;
+  descendingToggle: boolean = true;
   currentUsers: IUserInfo[] = [];
   math = Math;
-  filter: boolean = true;
+  filter: boolean = false;
   linkArray: number[] = [];
   gameListActive: boolean = false;
 
@@ -62,51 +62,45 @@ export class GameListComponent implements OnInit {
     ));
 
     this.steamService.getGameListFromID(IDSub).then(data => {
-   
       this.gameListObject = data;
-      this.gameListActive = true;
-      this.steamService.getSteamUserFromID(IDSub).then(x => {
-        this.listService.init(x, this.gameListObject);
-
-        this.getPageOfItems(this.currentPage).then(data => {
-          this.sortList(Constants.APP_ID_KEY, false);
-          this.currentGameList = data;
-          this.loading = false;
-        }).catch(reject => {
-          console.log(reject);
-        });
-      }).catch(reject => {
+      this.steamService.getSteamUserFromID(IDSub)
+      .then((id) => {
+        this.listService.init(id, this.gameListObject);
+      })
+      .then(() =>{
+        console.log("update1");
+        this.updateGameList();
+        this.gameListActive = true;
+      })
+      .catch(reject => {
         console.log(reject);
       });
-
-      this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
-      this.numberOfPages = this.pagination.getNumberPages();
     }).catch(error => {
       console.log(error);
       this.noGameList = true;
     });
 
     this.listService.getGameList().subscribe(gameList => {
-      this.loading = true;
-      this.unFilteredGameListObject = gameList; 
-      this.pagination.update(5, this.gamesPerPage, this.unFilteredGameListObject.game_count ?? 0);
-      this.numberOfPages = this.pagination.getNumberPages();
-      this.getPageOfItems(this.currentPage).then(data => {
-        this.currentGameList = data;
-        this.loading = false;
-      });
+        this.unFilteredGameListObject = gameList; 
+
+        if(!this.filter && this.gameListActive){
+          console.log("update2");
+          this.updateGameList();
+        }
     });
 
     this.listService.getFilteredGameList().subscribe(filteredGameList => {
-      this.loading = true;
-      this.filteredGameListObject.games = Array.from(filteredGameList.keys());
-      this.filteredGameListObject.game_count = this.filteredGameListObject.games.length; 
-      this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
-      this.numberOfPages = this.pagination.getNumberPages();
-      this.getPageOfItems(this.currentPage).then(data => {
-        this.currentGameList = data;
-        this.loading = false;
-      });
+
+        let games = Array.from(filteredGameList.keys());
+        this.filteredGameListObject.games = games;
+        this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
+        
+        console.log(this.filteredGameListObject);
+
+        if(this.filter && this.gameListActive){
+          console.log("update3");
+          this.updateGameList();
+        }
     });
 
   }
@@ -119,18 +113,20 @@ export class GameListComponent implements OnInit {
     window.open("https://store.steampowered.com/app/" + appid, "_blank");
   }
 
-  sortList(key: string, descending: boolean): void{
+  sortList(key: string = this.previousKey, toggle: boolean): void{
 
     this.appIDString = "App ID";
     this.gameNameString = "Game Title";
     this.playtimeString = "Hours Played";
-
-    if(this.previousKey == key){                  //TODO: Find better implementation, too confusing.
-      descending = !this.descendingToggle;
-      this.descendingToggle = !this.descendingToggle;
+    let descending = !this.descendingToggle;
+    
+    if(toggle){
+      if(this.previousKey == key){
+        descending = this.descendingToggle;
+        this.descendingToggle = !this.descendingToggle;
+      }
     }
-    else
-      descending = false;
+    
     switch (key) {
       case Constants.APP_ID_KEY:
         if(!Object.is(this.gameListObject, {})){
@@ -153,9 +149,7 @@ export class GameListComponent implements OnInit {
             this.gameListObject.games?.reverse();
             this.appIDString = "App ID \u25BC";
           }
-          this.getPageOfItems(this.currentPage).then(data => {
-            this.currentGameList = data;
-          });
+          this.currentGameList = this.getPageOfItems(this.currentPage);
         }
         break;
       case Constants.GAME_NAME_KEY:
@@ -173,9 +167,7 @@ export class GameListComponent implements OnInit {
             this.gameListObject.games?.reverse();
             this.gameNameString = "Game Title \u25BC";
           }
-          this.getPageOfItems(this.currentPage).then(data => {
-            this.currentGameList = data;
-          });
+          this.currentGameList = this.getPageOfItems(this.currentPage);
         }
         break;
       case Constants.PLAYTIME_KEY:
@@ -202,14 +194,13 @@ export class GameListComponent implements OnInit {
             this.gameListObject.games?.reverse();
             this.playtimeString = "Hours Played \u25BC";
           }
-          this.getPageOfItems(this.currentPage).then(data => {
-            this.currentGameList = data;
-          });
+          this.currentGameList = this.getPageOfItems(this.currentPage);
         }
 
         break;
 
       default:
+        this.sortList(this.previousKey, false);
         break;
     }
 
@@ -217,36 +208,42 @@ export class GameListComponent implements OnInit {
   }
 
   changePage(pageNumber: number): void{
-    this.getPageOfItems(pageNumber).then(data => {
-      this.currentGameList = data;
-    })
+    this.currentGameList = this.getPageOfItems(pageNumber);
   }
 
-  changeGameList(filter: boolean){
-    if(filter){
+  updateGameList(event?: Event): void{
+    console.log("toggle")
+    this.loading = true;
+    
+    if(typeof event === 'object'){
+      this.filter = (event.target as HTMLInputElement).checked;
+    }
+    console.log(this.filter);
+    if(this.filter){
       this.gameListObject = this.filteredGameListObject;
     } else {
       this.gameListObject = this.unFilteredGameListObject;
     }
+
+    this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
+    this.numberOfPages = this.pagination.getNumberPages();
+    this.currentPage = 1;
+    this.sortList(undefined, false);
+    this.loading = false;
   }
 
-  getPageOfItems(pageNumber: number): Promise<IGameList>{
-    return new Promise((resolve, reject) =>{
-      
-      this.changeGameList(this.filter);
+  getPageOfItems(pageNumber: number): IGameList{
 
       if(this.gameListObject.games != undefined){
-        var length = this.pagination.getTotalItems();
+        var length = this.gameListObject.game_count ?? 0;
         var items = pageNumber * 15 - 1 >= length ? 
         this.gameListObject.games.slice((pageNumber - 1) * 15) : 
         this.gameListObject.games.slice((pageNumber - 1) * 15, pageNumber * 15);
-
+        console.log(items);
         this.linkArray = this.pagination.updateLinkArray(pageNumber);
 
-        resolve({game_count: length, games: items});
-        }else{
-          reject("Game list is undefined.");
-        }
-    })
+        return{games: items, game_count: length}
+    }
+    return {games: [], game_count: 0};
   }
 }

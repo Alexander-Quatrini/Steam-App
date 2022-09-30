@@ -18,8 +18,6 @@ export class GameListService {
     this.gameList = new BehaviorSubject<IGameList>({});
     this.map = new BehaviorSubject<Map<IGame,string[]>>(new Map<IGame, string[]>());
     this.fullGameList = {};
-    this.fullGameList.game_count = 0;
-    this.fullGameList.games = [];
   }
 
   init(steamuser: IUserInfo, list: IGameList): void{
@@ -28,10 +26,11 @@ export class GameListService {
   }
 
   addUser(steamuser: IUserInfo, list: IGameList): void{
-    if(this.users.value.find(x => {return x.steamid == steamuser.steamid;}) == undefined){
+    console.log(this.users.value);
+    if(this.users.value.includes(steamuser) == false){
       this.users.value.push(steamuser);
       this.users.next(this.users.value);  
-    }
+    
     list.games?.map(game => {
       game.owner = [steamuser.avatar ?? ""];
     })
@@ -63,7 +62,7 @@ export class GameListService {
       })
     
     this.filterList();
-
+    }
   }
 
   removeUser(steamuser: IUserInfo): void{

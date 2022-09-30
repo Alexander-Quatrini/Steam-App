@@ -37,7 +37,7 @@ export class FriendsListComponent implements OnInit {
 
     this.steamService.getFriendsListFromID(id).then(data =>
     {
-      this.friendList = data.slice(0, this.maxFriendsToShow);
+      return this.friendList = data.slice(0, this.maxFriendsToShow);
       
     }).then(() => {
         this.steamService.getSteamUsersFromIDs(this.friendList.map(x => {return x.steamid ?? ""})).then(data =>
@@ -47,16 +47,13 @@ export class FriendsListComponent implements OnInit {
     });
   }
 
-  addFriendToGameList(friendID: string, name?: string): void {
+  addFriendToGameList(friend: IUserInfo): void {
     
     var gameList: IGameList = {};
 
-    this.steamService.getGameListFromID(friendID).then(data => {
+    this.steamService.getGameListFromID(friend.steamid).then(data => {
       gameList = data;
-      
-      this.steamService.getSteamUserFromID(friendID ?? "").then(data => {
-        this.listService.addUser(data, gameList);
-      }).catch(err => console.log(err));
+      this.listService.addUser(friend, gameList);
     });
   }
 
