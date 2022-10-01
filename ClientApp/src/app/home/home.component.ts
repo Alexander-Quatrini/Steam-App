@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
 
   constructor (private steamService: SteamService)
   {
-    
+
   }
 
   ngOnInit(): void {

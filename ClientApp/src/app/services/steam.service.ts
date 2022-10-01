@@ -44,7 +44,8 @@ export class SteamService {
         this.http.post<IGetGameListResponse>(this.apiUrl + ":" + this.apiPort + "/api/steam/getgamelist", {ID: this.steamID, SessionID: this.sessionID, gameListID: id})
         .toPromise().then(content => {
           content.response.games?.map(entry => {entry.owners?.push({name: user, playtime: entry.playtime_forever ?? 0})});
-          content.response.games = content.response.games?.map(data => ({ ...data, playtime_forever: Number(Math.round(Number((data.playtime_forever ?? 0) / 60 + "e" + "1"))+ "e-" +"1")}));
+          content.response.games = content.response.games?.map(data => ({ ...data, playtime_forever: Number(Math.round
+            (Number((data.playtime_forever ?? 0) / 60 + "e" + "1"))+ "e-" +"1")}));
           resolve(content.response);
         })
       }).catch(err =>{

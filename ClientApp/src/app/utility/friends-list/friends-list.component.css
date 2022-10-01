@@ -7,3 +7,24 @@
     text-decoration: none;
     font-size: 25px;
 }
+
+.modal{
+    overflow: visible;
+}
+
+.modal-body ul{
+    max-height: 75vh;
+}
+
+#exampleModal ul::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: --bg-dark;
+    border: none;
+}
+    
+#exampleModal ul::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: gray;
+    outline: 1px solid black;
+}

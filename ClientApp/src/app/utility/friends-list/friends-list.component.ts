@@ -2,10 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { GameListService } from 'src/app/services/game-list-service.service';
 import { SteamService } from 'src/app/services/steam.service';
 import { Constants } from 'src/app/util/constants.util';
-import { IFriend } from 'src/models/IFriend.model';
 import { IGameList } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
-
+import { Modal } from 'bootstrap'
 @Component({
   selector: 'app-friends-list',
   templateUrl: './friends-list.component.html',
@@ -26,9 +25,12 @@ export class FriendsListComponent implements OnInit {
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
 
-  friendList: IFriend[] = [];
-  friendListInfo: IUserInfo[] = [];
+  friendIDs: string[] = [];
 
+  friendList: IUserInfo[] = [];
+  friendListAbridged: IUserInfo[] = [];
+
+  modal: any;
   constructor(private listService: GameListService, private steamService: SteamService) { }
 
   ngOnInit(): void {
@@ -37,14 +39,26 @@ export class FriendsListComponent implements OnInit {
 
     this.steamService.getFriendsListFromID(id).then(data =>
     {
-      return this.friendList = data.slice(0, this.maxFriendsToShow);
-      
-    }).then(() => {
-        this.steamService.getSteamUsersFromIDs(this.friendList.map(x => {return x.steamid ?? ""})).then(data =>
-      {
-        this.friendListInfo = data;
-      })
+      this.friendIDs = data.map(friend => friend.steamid);
+      return this.friendIDs;
+    })
+    .then(friend => {
+      return this.steamService.getSteamUsersFromIDs(friend);
+    }).then(users => {
+      this.friendList = users;
+      this.friendListAbridged = users.slice(0, this.maxFriendsToShow);
+    })
+    .catch(error => {
+      console.log(error);
     });
+
+    this.modal = new Modal(
+      document.getElementById('exampleModal') ?? ""
+    );
+  }
+
+  showModal(): void{
+    this.modal.show();
   }
 
   addFriendToGameList(friend: IUserInfo): void {
