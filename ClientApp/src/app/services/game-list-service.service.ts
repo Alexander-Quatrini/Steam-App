@@ -10,14 +10,12 @@ export class GameListService {
 
   private users: BehaviorSubject<IUserInfo[]>;
   private gameList: BehaviorSubject<IGameList>;
-  private fullGameList: IGameList;
   private map: BehaviorSubject<Map<IGame,string[]>>;
   private updatedList: Map<string,IGame> = new Map<string,IGame>();
   constructor() { 
     this.users = new BehaviorSubject<IUserInfo[]>([]);
     this.gameList = new BehaviorSubject<IGameList>({});
     this.map = new BehaviorSubject<Map<IGame,string[]>>(new Map<IGame, string[]>());
-    this.fullGameList = {};
   }
 
   init(steamuser: IUserInfo, list: IGameList): void{
@@ -25,17 +23,16 @@ export class GameListService {
       game.owners = [];
     })
     this.addUser(steamuser, list);
-    this.fullGameList = {game_count: list.games?.length, games: list.games};
   }
 
   addUser(steamuser: IUserInfo, list: IGameList): void{
     if(this.users.value.includes(steamuser) == false){
       this.users.value.push(steamuser);
-      this.users.next(this.users.value);  
     
     list.games?.map(game => {
       game.owners.push({name: steamuser, playtime: game.playtime_forever ?? 0});
     })
+
     //this.fullGameList.games = this.fullGameList.games?.concat(list.games ?? []);
 
     //https://stackoverflow.com/questions/33850412/merge-javascript-objects-in-array-with-same-key 
@@ -49,13 +46,13 @@ export class GameListService {
             existingOwners.push(original);
             playtime += original.playtime;
           })
-          if(typeof existingOwners !== 'undefined'){
+          if(existingOwners.length > 0){
             this.updatedList.set(originalGame.appid, {...existingGame, owners: existingOwners, playtime_forever: playtime});
           } else {
-            this.updatedList.set(originalGame.appid, {...existingGame, owners: originalGame.owners});
+            this.updatedList.delete(originalGame.appid);
           }
       } else{
-          this.updatedList.set(originalGame.appid, originalGame);
+        this.updatedList.set(originalGame.appid, originalGame);
       }
     }
   });
@@ -65,15 +62,43 @@ export class GameListService {
         games: Array.from(this.updatedList.values()),
       })
     
+    console.log(this.gameList.value);
+
+
     this.filterList();
     }
   }
 
   removeUser(steamuser: IUserInfo): void{
-    let index = this.users.value.findIndex(x => {return x.steamid == steamuser.steamid});
+    
+    let index = this.users.value.indexOf(steamuser);
+    let newGames: IGame[] = [];
+
     if(index > -1){
-      this.users.next(this.users.value.splice(index, 1));
+      this.users.value.splice(index, 1)
+      this.users.next(this.users.value);
     }
+    
+    newGames = this.gameList.value.games?.filter((game) => {
+      let owners = game.owners.filter(owner => owner.name != steamuser);
+      game.owners = owners;
+      game.total_playtime = 0;
+      game.owners.forEach(owner => game.total_playtime += owner.playtime);
+
+      return (game.owners.length > 0);
+    }) ?? [];
+
+    this.updatedList.clear();
+    newGames.forEach(game => {
+      this.updatedList.set(game.appid ?? "null", game);
+    });
+
+    this.gameList.next(
+    {
+        game_count: newGames.length,
+        games: newGames,
+    })
+
   }
 
   filterList(): void{
