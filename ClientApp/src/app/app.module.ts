@@ -12,6 +12,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { UtilityModule } from './utility/utility.module';
 import { GameListService } from './services/game-list-service.service';
 import { SteamService } from './services/steam.service';
+import { FilterService } from './services/filter.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,9 @@ import { SteamService } from './services/steam.service';
     UtilityModule
   ],
   providers: [ GameListService,
-  SteamService ],
+  SteamService,
+  FilterService,
+ ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

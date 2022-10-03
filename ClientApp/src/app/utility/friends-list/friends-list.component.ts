@@ -20,7 +20,7 @@ export class FriendsListComponent implements OnInit {
   sessionID: string = "";
 
   @Input()
-  maxFriendsToShow: number = 12;
+  maxFriendsToShow: number = 6;
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
@@ -31,7 +31,9 @@ export class FriendsListComponent implements OnInit {
   friendListAbridged: IUserInfo[] = [];
   modalFriends: IUserInfo[] = [];
   friendsToRemove: IUserInfo[] = [];
+  friendsToAdd: IUserInfo[] = [];
   currentUsers: IUserInfo[] = [];
+  added: IUserInfo[] = [];
 
   modal: any;
   constructor(private listService: GameListService, private steamService: SteamService) { }
@@ -55,11 +57,12 @@ export class FriendsListComponent implements OnInit {
     })
     .then(users => {
       this.friendList = users;
-      this.friendListAbridged = users.slice(0, this.maxFriendsToShow);
     })
     .catch(error => {
       console.log(error);
     });
+
+    
 
     this.modal = new Modal(
       document.getElementById('exampleModal') ?? ""
@@ -68,21 +71,31 @@ export class FriendsListComponent implements OnInit {
     document.getElementById('exampleModal')?.addEventListener('hide.bs.modal', event=> {
       let eventTarget = event.target as HTMLElement;
       if(eventTarget && (eventTarget.id != 'save-button')){
-        this.modalFriends.forEach(friend => {
-          this.friendList.push(friend);
-        });
+        this.friendsToAdd.forEach(friend => {this.friendList.push(friend);})
+        this.modalFriends = [];
+        this.friendsToRemove = [];
+        this.friendsToAdd = [];
       }
     })
   }
 
   showModal(): void{
     this.modal.show();
-    this.modalFriends = this.currentUsers.filter(x => x.steamid != this.steamID);
+    this.currentUsers.map(user => {
+      if(!this.modalFriends.includes(user)){
+        this.modalFriends.push(user)
+        let fIndex = this.friendList.indexOf(user);
+        if(fIndex > -1){
+          this.friendList.splice(fIndex,1);
+        }
+      }
+      });
   }
 
   modalAddFriend(user: IUserInfo, event: Event): void{
     event.stopPropagation();
     if(!this.modalFriends.includes(user)){
+      this.friendsToAdd.push(user);
       this.modalFriends.push(user);
       let index = this.friendList.indexOf(user);
 
@@ -96,6 +109,8 @@ export class FriendsListComponent implements OnInit {
         this.friendsToRemove.splice(rIndex, 1);
       }
     }
+
+    console.log(this.friendsToAdd);
   }
 
   modalRemoveFriend(user: IUserInfo, event: Event): void{
@@ -104,7 +119,16 @@ export class FriendsListComponent implements OnInit {
 
     if(index > -1){
       this.modalFriends.splice(index, 1);
-      this.friendList.push(user);
+
+      if(!this.friendList.includes(user)){
+        this.friendList.unshift(user);
+      }
+
+      let aIndex = this.friendsToAdd.indexOf(user);
+
+      if(aIndex > -1){
+        this.friendsToAdd.splice(aIndex,1);
+      }
       
       if(this.friendsToRemove.indexOf(user) == -1 && this.currentUsers.indexOf(user) > -1){
         this.friendsToRemove.push(user);
@@ -113,32 +137,60 @@ export class FriendsListComponent implements OnInit {
   }
 
   modalConfirmChanges(){
-    this.modalFriends.forEach(user => this.addFriendToGameList(user));
-    this.friendsToRemove.forEach(user => this.listService.removeUser(user));
+    this.addFriendToGameList(this.friendsToAdd);
+    this.removeFriendFromGameList(this.friendsToRemove);
     this.friendsToRemove = [];
+    this.friendsToAdd = [];
     this.modal.hide();
   }
 
-  addFriendToGameList(friend: IUserInfo): void {
+  addFriendToGameList(friends: IUserInfo[]): void {
     var gameList: IGameList = {};
     
-    let index = this.friendList.indexOf(friend);
+    console.log("Called");
 
-    if(index > -1){
-      this.friendList.splice(index,1);
-    }
+    friends.map(friend => {
+      console.log(friend);
+      let index = this.friendListAbridged.indexOf(friend);
 
+      this.listService.isReady(false);
+  
+      if(index > -1){
+          this.friendListAbridged.splice(index, 1);
+      }
 
-    this.listService.isReady(false);
-    this.steamService.getGameListFromID(friend.steamid)
-    .then(data => {
-      gameList = data;
-      gameList.games?.forEach(x => {
-        x.owners = [];
-      })
-      this.listService.addUser(friend, gameList);
-      this.listService.isReady(true);
+      this.steamService.getGameListFromID(friend.steamid)
+      .then(data => {
+        gameList = data;
+        gameList.games?.forEach(x => {
+          x.owners = [];
+        })
+        this.listService.addUser(friend, gameList);
+        this.listService.isReady(true);
+      });
+      this.added.push(friend);
     });
+  }
+
+  removeFriendFromGameList(friends: IUserInfo[]){
+    this.listService.isReady(false);
+    friends.map(friend => {
+      this.listService.removeUser(friend);
+      let aIndex = this.added.indexOf(friend);
+      if(aIndex > -1){
+        this.added.splice(aIndex, 1);
+        this.friendListAbridged.push(friend);
+        if(this.friendListAbridged.length > this.maxFriendsToShow){
+          this.friendListAbridged.shift();
+        }
+      }
+
+      let mIndex = this.modalFriends.indexOf(friend);
+      if(mIndex > -1){
+        this.modalFriends.splice(mIndex, 1);
+      }
+    });
+    this.listService.isReady(true);
   }
 
 }

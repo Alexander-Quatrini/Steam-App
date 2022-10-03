@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { merge, Observable } from 'rxjs';
+import { merge, Observable, Observer } from 'rxjs';
 import { IGameList } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { GameListService } from '../services/game-list-service.service';
@@ -7,6 +7,7 @@ import { PaginationService } from '../services/pagination.service';
 import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
 import { map } from 'rxjs/operators';
+import { FilterService } from '../services/filter.service';
 
 @Component({
   selector: 'app-game-list',
@@ -27,6 +28,8 @@ export class GameListComponent implements OnInit {
 
   @Input()
   personaname: string = "";
+
+  filtered: Observable<boolean>;
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
@@ -52,14 +55,28 @@ export class GameListComponent implements OnInit {
   linkArray: number[] = [];
   gameList: Observable<IGameList>;
 
-  constructor(private pagination: PaginationService, private listService: GameListService, private steamService: SteamService) {
+  constructor(private pagination: PaginationService, private listService: GameListService, private steamService: SteamService, private filters: FilterService) {
     this.gameList = this.listService.getGameList();
+    this.filtered = filters.getFilters();
   }
 
   ngOnInit(): void {
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
     
+    this.filtered.subscribe(value => {
+      if(this.ready){
+        this.filter = value;
+        if(value){
+          this.gameListObject = this.filteredGameListObject;
+        } else {
+          this.gameListObject = this.unFilteredGameListObject;
+        }
+
+        this.updateDisplay();
+      }
+    });
+
     this.listService.getUserList().subscribe(users => {
       console.log(users);
       this.currentUsers = users;
@@ -98,7 +115,7 @@ export class GameListComponent implements OnInit {
         return;
       })
       .then(() =>{
-        this.updateGameList();
+        this.updateDisplay();
         this.ready = true;
       })
       .catch(reject => {
@@ -228,14 +245,6 @@ export class GameListComponent implements OnInit {
 
   changePage(pageNumber: number): void{
     this.currentGameList = this.getPageOfItems(pageNumber);
-  }
-
-  updateGameList(event?: Event): void{
-    if(typeof event === 'object'){
-      this.filter = (event.target as HTMLInputElement).checked;
-    }
-      this.gameListObject = this.filter ? this.filteredGameListObject : this.unFilteredGameListObject;
-      this.updateDisplay();
   }
 
   updateDisplay(): void{

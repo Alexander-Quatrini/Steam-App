@@ -1,26 +1,56 @@
 
 <div class="container-fluid text-start w-100 my-5">
     
-    <h3 class="text-start">Friends</h3>
 
+  <div *ngIf="added.length > 0">
+
+    <h3 class="text-start">Added Friends to Game List</h3>
+    <ul class="list-group">
+      
+      <li *ngFor="let item of added" class="list-group-item  bg-dark text-white d-inline-block">
+        <div class="row text-start">
+          <div class="col-3">
+            <img class="friend-image col-9" src="{{item.avatarmedium}}"/>
+          </div>
+          <div class="col-8">
+            <p>{{item.personaname}}</p>
+          </div>
+          <div class="col-1">
+            <a (click)="removeFriendFromGameList([item])" class="link link-info friend-link pointer">&#215;</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+    <div class="mt-5 text-center"*ngIf="added.length < 1">
+      <p>Start by adding friends to the list here!</p>
+      <h2 class="display-2 fw-bolder font-monospace">&#8595;</h2>
+    </div>
+
+
+    <div class="text-center" *ngIf="friendListAbridged.length > 0">
+      <h2 class="display-6 fw-bolder font-monospace">Recently Added</h2>
+    </div>
     <ul class="list-group">
         
-        <li *ngFor="let item of friendListAbridged" class="list-group-item  bg-dark text-white d-inline-block">
-            <div class="row text-start">
-                <div class="col-3">
-                    <img class="friend-image col-9" src="{{item.avatarmedium}}"/>
-                </div>
-                <div class="col-8">
-                    <p>{{item.personaname}}</p>
-                </div>
-                <div class="col-1">
-                    <a (click)="addFriendToGameList(item)" class="link link-info friend-link pointer">+</a>
-                </div>
+      <li *ngFor="let item of friendListAbridged" class="list-group-item  bg-dark text-white d-inline-block">
+        <div class="row text-start">
+            <div class="col-3">
+                <img class="friend-image col-9" src="{{item.avatarmedium}}"/>
             </div>
-        </li>
+            <div class="col-8">
+                <p>{{item.personaname}}</p>
+            </div>
+            <div class="col-1">
+                <a (click)="addFriendToGameList([item])" class="link link-info friend-link pointer">+</a>
+            </div>
+        </div>
+      </li>
     </ul>
+
     <div class="mt-3 text-center">
-        <button type="button" class="btn btn-lg btn-dark"(click)="showModal()">All Friends</button>
+        <button type="button" class="btn btn-lg btn-dark btn-outline-info"(click)="showModal()">Add Friends</button>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
