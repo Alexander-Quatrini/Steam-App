@@ -30,6 +30,10 @@ In the former, run <code>dotnet run</code> and in the latter <code>npm start</co
 
 # Progress
 
-State of webpage when logged in as of 9/26/2022:
+**State of home page when logged in as of 10/3/2022:**
 
-![9-26-22-steam-app](https://user-images.githubusercontent.com/17236535/192356770-f1e63f68-09a4-45e7-8cfb-42d2950db84a.png)
+![home-10-3-2022](https://user-images.githubusercontent.com/17236535/193656679-76266eaf-9381-4d5a-9d11-076bc5c6802c.png)
+
+**State of "Add Friends" modal as of 10/3/2022:**
+
+![modal-10-3-2022](https://user-images.githubusercontent.com/17236535/193656844-df2ef360-5fa6-418e-aec7-8b5ccade3294.png)
