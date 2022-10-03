@@ -2,14 +2,7 @@
 <div *ngIf="!noGameList; else problem_loading">
     <div class="container-fluid w-100 my-5">
 
-        <ng-container *ngIf="loading == true; else game_list">
-            <div class="my-5 p-3 border-start border-info bg-dark">
-                <b class="display-5">Updating Game List...</b>
-                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-            </div>
-        </ng-container>
-
-        <ng-template #game_list>
+        <ng-container *ngIf="ready; else loading">
 
             <h3 class="text-center d-inline">Game List For</h3>
             <h3 class="d-inline" *ngFor="let item of currentUsers">
@@ -31,7 +24,7 @@
                             <tr class="pointer" (click)="toggleExpanded((item.appid))">
                                 <td>{{item.appid}}</td>
                                 <td><img *ngIf="item.img_icon_url != ''" src="https://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-                                <td><div class="every-other" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="25" width="25"/></div></td>
+                                <td><div class="every-third" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="25" width="25"/></div></td>
                                 <td class="text-center align-middle"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
                                 <td class="text-center align-middle text-muted font-monospace">&#9654;</td>    
                             </tr>
@@ -39,8 +32,8 @@
                                 <td class="my-5" colspan="5">
                                     <h5 class="text-center text-muted m-auto">{{item.name}}</h5>
                                     <div class="align-center">
-                                        <div class="every-other float-end" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="40" width="40"/></div>
-                                        <p class="mx-2">Combined playtime: {{item.playtime_forever}} hour(s).</p>
+                                        <div class="float-end" *ngFor="let user of item.owners"><img class="every-third" src="{{user.name.avatar}}" height="40" width="40"/></div>
+                                        <p class="mx-2">Combined playtime: {{math.trunc(item.playtime_forever ?? 0)}} hour(s).</p>
                                     </div>
                                 </td>
                             </tr>
@@ -65,7 +58,15 @@
                     </li>
                 </ul>
             </nav>
+        </ng-container>
+
+        <ng-template #loading>
+            <div class="my-5 p-3 border-start border-info bg-dark">
+                <b class="display-5">Updating Game List...</b>
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            </div>
         </ng-template>
+
     </div>
 </div>
                 

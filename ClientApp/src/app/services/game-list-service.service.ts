@@ -12,10 +12,12 @@ export class GameListService {
   private gameList: BehaviorSubject<IGameList>;
   private map: BehaviorSubject<Map<IGame,string[]>>;
   private updatedList: Map<string,IGame> = new Map<string,IGame>();
+  private ready: BehaviorSubject<boolean>
   constructor() { 
     this.users = new BehaviorSubject<IUserInfo[]>([]);
     this.gameList = new BehaviorSubject<IGameList>({});
     this.map = new BehaviorSubject<Map<IGame,string[]>>(new Map<IGame, string[]>());
+    this.ready = new BehaviorSubject<boolean>(false);
   }
 
   init(steamuser: IUserInfo, list: IGameList): void{
@@ -28,6 +30,12 @@ export class GameListService {
   addUser(steamuser: IUserInfo, list: IGameList): void{
     if(this.users.value.includes(steamuser) == false){
       this.users.value.push(steamuser);
+      this.users.next(this.users.value);
+      this.addGameList(steamuser, list);
+    }
+    
+  }
+  addGameList(steamuser: IUserInfo, list: IGameList){
     
     list.games?.map(game => {
       game.owners.push({name: steamuser, playtime: game.playtime_forever ?? 0});
@@ -55,20 +63,16 @@ export class GameListService {
         this.updatedList.set(originalGame.appid, originalGame);
       }
     }
+    
   });
+  
     this.gameList.next(
       {
         game_count: this.updatedList.size,
         games: Array.from(this.updatedList.values()),
       })
-    
-    console.log(this.gameList.value);
 
-
-    this.filterList();
     }
-  }
-
   removeUser(steamuser: IUserInfo): void{
     
     let index = this.users.value.indexOf(steamuser);
@@ -77,48 +81,61 @@ export class GameListService {
     if(index > -1){
       this.users.value.splice(index, 1)
       this.users.next(this.users.value);
+
+      newGames = this.gameList.value.games?.filter((game) => {
+        let owners = game.owners.filter(owner => owner.name != steamuser);
+        game.owners = owners;
+        game.total_playtime = 0;
+        game.owners.forEach(owner => game.total_playtime += owner.playtime);
+  
+        return (game.owners.length > 0);
+      }) ?? [];
+  
+      this.updatedList.clear();
+      newGames.forEach(game => {
+        this.updatedList.set(game.appid ?? "null", game);
+      });
+  
+      this.gameList.next(
+      {
+          game_count: newGames.length,
+          games: newGames,
+      })
+
     }
     
-    newGames = this.gameList.value.games?.filter((game) => {
-      let owners = game.owners.filter(owner => owner.name != steamuser);
-      game.owners = owners;
-      game.total_playtime = 0;
-      game.owners.forEach(owner => game.total_playtime += owner.playtime);
-
-      return (game.owners.length > 0);
-    }) ?? [];
-
-    this.updatedList.clear();
-    newGames.forEach(game => {
-      this.updatedList.set(game.appid ?? "null", game);
-    });
-
-    this.gameList.next(
-    {
-        game_count: newGames.length,
-        games: newGames,
-    })
 
   }
 
-  filterList(): void{
+  filterList(): Promise<Map<IGame,string[]>>{
 
-    let tempMap = new Map<IGame,string[]>();
+    return new Promise((resolve, reject)=>{
+      let tempMap = new Map<IGame,string[]>();
 
-    this.gameList.value.games?.forEach(entry => {
-      if(typeof entry.name === 'string' && typeof entry.owners !== 'undefined'){
-        let owners = entry.owners.map(x => {return x.name.steamid;});
-        tempMap.set(entry, owners);
-      }
-
-      tempMap.forEach((value, key) => {
-        if(value.length != this.users.value.length)
-        {
-          tempMap.delete(key);
+      this.gameList.value.games?.forEach(entry => {
+        if(typeof entry.name === 'string' && typeof entry.owners !== 'undefined'){
+          let owners = entry.owners.map(x => {return x.name.steamid;});
+          tempMap.set(entry, owners);
         }
+
+        tempMap.forEach((value, key) => {
+          if(value.length != this.users.value.length)
+          {
+            tempMap.delete(key);
+          }
+        })
       })
-    })
-    this.map.next(tempMap);
+      this.map.next(tempMap);
+      resolve(tempMap);
+    });
+  }
+
+  isReady(value: boolean): void{
+    this.ready.next(value);
+  }
+
+  getReadyState(): Observable<boolean>{
+    return this.ready.asObservable();
   }
 
   getUserList(): Observable<IUserInfo[]>{

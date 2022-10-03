@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { merge, Observable } from 'rxjs';
 import { IGameList } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { GameListService } from '../services/game-list-service.service';
 import { PaginationService } from '../services/pagination.service';
 import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game-list',
@@ -37,7 +39,6 @@ export class GameListComponent implements OnInit {
   gamesPerPage: number = 15;
   currentPage: number = 1;
   currentGameList: IGameList = {games: [], game_count: 0};
-  loading: boolean = true;
   appIDString: string = "App ID";
   gameNameString: string = "Game Title";
   playtimeString: string = "Hours Played";
@@ -45,57 +46,81 @@ export class GameListComponent implements OnInit {
   descendingToggle: boolean = true;
   currentUsers: IUserInfo[] = [];
   math = Math;
+  loading: boolean = true;
+  ready: boolean = false;
   filter: boolean = false;
   linkArray: number[] = [];
-  gameListActive: boolean = false;
+  gameList: Observable<IGameList>;
 
-  constructor(private pagination: PaginationService, private listService: GameListService, private steamService: SteamService) {}
+  constructor(private pagination: PaginationService, private listService: GameListService, private steamService: SteamService) {
+    this.gameList = this.listService.getGameList();
+  }
 
   ngOnInit(): void {
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
+    
+    this.listService.getUserList().subscribe(users => {
+      console.log(users);
+      this.currentUsers = users;
+    });
+    
+    this.gameList.subscribe(gameList => {
+      this.unFilteredGameListObject = gameList;
+      this.listService.filterList()
+      .then((filteredGameList) => {
+        this.filteredGameListObject.games = Array.from(filteredGameList.keys());
+        this.filteredGameListObject.game_count = filteredGameList.size;
+        if(this.filter){
+          this.gameListObject = this.filteredGameListObject
+        } else {
+          this.gameListObject = this.unFilteredGameListObject;
+        }
+        this.updateDisplay();
+        return this.gameListObject;
+      });
+    });
 
-    this.listService.getUserList().subscribe((y => {
-        this.currentUsers = y;
-      }
-    ));
+      this.listService.getReadyState().subscribe(ready => {
+        console.log(ready);
+        this.ready = ready;
+      })
 
-    this.steamService.getGameListFromID(IDSub).then(data => {
+    this.steamService.getGameListFromID(IDSub)
+    .then(data => {
       this.gameListObject = data;
-      this.steamService.getSteamUserFromID(IDSub)
-      .then((id) => {
-        this.listService.init(id, this.gameListObject);
+      return IDSub;
+      }).then((id) =>{
+        return this.steamService.getSteamUserFromID(id);
+      })
+      .then((user) => {
+        this.listService.init(user, this.gameListObject);
+        return;
       })
       .then(() =>{
         this.updateGameList();
-        this.gameListActive = true;
+        this.ready = true;
       })
       .catch(reject => {
         console.log(reject);
-      });
-    }).catch(error => {
+      })
+      .catch(error => {
       console.log(error);
       this.noGameList = true;
     });
 
-    this.listService.getGameList().subscribe(gameList => {
-        this.unFilteredGameListObject = gameList; 
+     /*this.listService.getReadyState().subscribe(ready => {
+       this.ready = ready;
+     });*/
 
-        if(!this.filter && this.gameListActive){
-          this.updateGameList();
-        }
-    });
+    // this.listService.getGameList().pipe(observeOn(queueScheduler)).subscribe
 
-    this.listService.getFilteredGameList().subscribe(filteredGameList => {
+    /*this.listService.getFilteredGameList().subscribe(filteredGameList => {
 
         let games = Array.from(filteredGameList.keys());
         this.filteredGameListObject.games = games;
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
-
-        if(this.filter && this.gameListActive){
-          this.updateGameList();
-        }
-    });
+    });*/
 
   }
 
@@ -206,22 +231,18 @@ export class GameListComponent implements OnInit {
   }
 
   updateGameList(event?: Event): void{
-    this.loading = true;
-    
     if(typeof event === 'object'){
       this.filter = (event.target as HTMLInputElement).checked;
     }
-    if(this.filter){
-      this.gameListObject = this.filteredGameListObject;
-    } else {
-      this.gameListObject = this.unFilteredGameListObject;
-    }
+      this.gameListObject = this.filter ? this.filteredGameListObject : this.unFilteredGameListObject;
+      this.updateDisplay();
+  }
 
+  updateDisplay(): void{
     this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
     this.numberOfPages = this.pagination.getNumberPages();
     this.currentPage = 1;
     this.sortList(undefined, false);
-    this.loading = false;
   }
 
   toggleExpanded(appid?: string){

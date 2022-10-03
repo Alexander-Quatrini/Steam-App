@@ -120,7 +120,6 @@ export class FriendsListComponent implements OnInit {
   }
 
   addFriendToGameList(friend: IUserInfo): void {
-    
     var gameList: IGameList = {};
     
     let index = this.friendList.indexOf(friend);
@@ -129,6 +128,8 @@ export class FriendsListComponent implements OnInit {
       this.friendList.splice(index,1);
     }
 
+
+    this.listService.isReady(false);
     this.steamService.getGameListFromID(friend.steamid)
     .then(data => {
       gameList = data;
@@ -136,6 +137,7 @@ export class FriendsListComponent implements OnInit {
         x.owners = [];
       })
       this.listService.addUser(friend, gameList);
+      this.listService.isReady(true);
     });
   }
 
