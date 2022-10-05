@@ -99,7 +99,6 @@ export class GameListComponent implements OnInit {
     });
 
       this.listService.getReadyState().subscribe(ready => {
-        console.log(ready);
         this.ready = ready;
       })
 

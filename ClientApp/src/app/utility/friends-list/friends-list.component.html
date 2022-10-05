@@ -53,7 +53,7 @@
         <button type="button" class="btn btn-lg btn-dark btn-outline-info"(click)="showModal()">Add Friends</button>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="friend-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content bg-dark text-white rounded-3">
             <div class="modal-header center">
@@ -76,9 +76,12 @@
               </ul>
             </div>
             <div class="modal-body border-0 p-3">
-              <ul class="list-group overflow-auto pe-3">
+              <div class="w-75 m-auto">
+                <input class="search-bar" id="search-bar" type="text" placeholder="Search..."/>
+              </div>
+              <ul class="list-group overflow-auto pe-3" id="scroll">
         
-                <li *ngFor="let item of friendList" class="list-group-item bg-dark text-white d-inline-block">
+                <li *ngFor="let item of modalFriendsList" class="list-group-item bg-dark text-white d-inline-block">
                     <div class="row text-start">
                         <div class="col-3">
                             <img class="friend-image col-9" src="{{item.avatarmedium}}"/>

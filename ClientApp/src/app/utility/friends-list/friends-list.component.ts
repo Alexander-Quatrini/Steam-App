@@ -30,16 +30,20 @@ export class FriendsListComponent implements OnInit {
   friendList: IUserInfo[] = [];
   friendListAbridged: IUserInfo[] = [];
   modalFriends: IUserInfo[] = [];
+  modalFriendsList: IUserInfo[] = [];
   friendsToRemove: IUserInfo[] = [];
   friendsToAdd: IUserInfo[] = [];
   currentUsers: IUserInfo[] = [];
   added: IUserInfo[] = [];
 
   modal: any;
+  ready: boolean = true;
+
   constructor(private listService: GameListService, private steamService: SteamService) { }
 
   ngOnInit(): void {
 
+    let searchBar = document.getElementById('search-bar') as HTMLInputElement;
 
     var id = this.steamID.substring(this.steamID.lastIndexOf('/') + 1);
 
@@ -56,7 +60,8 @@ export class FriendsListComponent implements OnInit {
       return this.steamService.getSteamUsersFromIDs(friend);
     })
     .then(users => {
-      this.friendList = users;
+      this.friendList = this.modalFriendsList = users;
+      this.ready = true;
     })
     .catch(error => {
       console.log(error);
@@ -65,42 +70,59 @@ export class FriendsListComponent implements OnInit {
     
 
     this.modal = new Modal(
-      document.getElementById('exampleModal') ?? ""
+      document.getElementById('friend-modal') ?? ""
     );
 
-    document.getElementById('exampleModal')?.addEventListener('hide.bs.modal', event=> {
+    document.getElementById('friend-modal')?.addEventListener('hide.bs.modal', event=> {
+    let scrollElement = document.getElementById('scroll');
+        if(scrollElement){
+          scrollElement.scrollTop = 0
+        }
+    });
+
+    document.getElementById('friend-modal')?.addEventListener('hidden.bs.modal', event=> {
       let eventTarget = event.target as HTMLElement;
       if(eventTarget && (eventTarget.id != 'save-button')){
-        this.friendsToAdd.forEach(friend => {this.friendList.push(friend);})
+        this.friendsToAdd.forEach(friend => {this.modalFriendsList.push(friend);})
+        searchBar.value = "";
         this.modalFriends = [];
         this.friendsToRemove = [];
         this.friendsToAdd = [];
       }
     })
+
+    searchBar?.addEventListener('keyup', event=> {
+      let eventTarget = event.target as HTMLInputElement;
+      let searchTerm = eventTarget.value.toLocaleLowerCase();
+
+      this.modalFriendsList = this.friendList.filter(friend => friend.personaname?.toLocaleLowerCase().includes(searchTerm))
+    })
   }
 
   showModal(): void{
+    if(this.ready){
     this.modal.show();
     this.currentUsers.map(user => {
       if(!this.modalFriends.includes(user)){
-        this.modalFriends.push(user)
-        let fIndex = this.friendList.indexOf(user);
+        this.modalFriends.push(user);
+        let fIndex = this.modalFriendsList.indexOf(user);
         if(fIndex > -1){
-          this.friendList.splice(fIndex,1);
+          this.modalFriendsList.splice(fIndex,1);
         }
       }
       });
   }
+}
 
   modalAddFriend(user: IUserInfo, event: Event): void{
     event.stopPropagation();
     if(!this.modalFriends.includes(user)){
       this.friendsToAdd.push(user);
       this.modalFriends.push(user);
-      let index = this.friendList.indexOf(user);
+      let index = this.modalFriendsList.indexOf(user);
 
       if(index > -1){
-        this.friendList.splice(index, 1);
+        this.modalFriendsList.splice(index, 1);
         console.log("splice");
       }
 
@@ -120,9 +142,11 @@ export class FriendsListComponent implements OnInit {
     if(index > -1){
       this.modalFriends.splice(index, 1);
 
-      if(!this.friendList.includes(user)){
-        this.friendList.unshift(user);
+      if(!this.modalFriendsList.includes(user)){
+        this.modalFriendsList.unshift(user);
       }
+
+      console.log(this.modalFriendsList);
 
       let aIndex = this.friendsToAdd.indexOf(user);
 
@@ -137,11 +161,15 @@ export class FriendsListComponent implements OnInit {
   }
 
   modalConfirmChanges(){
+    this.listService.isReady(false);
+    this.ready = false;
+    this.modal.hide();
     this.addFriendToGameList(this.friendsToAdd);
     this.removeFriendFromGameList(this.friendsToRemove);
     this.friendsToRemove = [];
     this.friendsToAdd = [];
-    this.modal.hide();
+    this.ready = true;
+    this.listService.isReady(true);
   }
 
   addFriendToGameList(friends: IUserInfo[]): void {
@@ -153,7 +181,6 @@ export class FriendsListComponent implements OnInit {
       console.log(friend);
       let index = this.friendListAbridged.indexOf(friend);
 
-      this.listService.isReady(false);
   
       if(index > -1){
           this.friendListAbridged.splice(index, 1);
@@ -166,14 +193,12 @@ export class FriendsListComponent implements OnInit {
           x.owners = [];
         })
         this.listService.addUser(friend, gameList);
-        this.listService.isReady(true);
       });
       this.added.push(friend);
     });
   }
 
   removeFriendFromGameList(friends: IUserInfo[]){
-    this.listService.isReady(false);
     friends.map(friend => {
       this.listService.removeUser(friend);
       let aIndex = this.added.indexOf(friend);
@@ -185,12 +210,15 @@ export class FriendsListComponent implements OnInit {
         }
       }
 
+      if(!this.modalFriendsList.includes(friend)){
+        this.modalFriendsList.unshift(friend);
+      }
+
       let mIndex = this.modalFriends.indexOf(friend);
       if(mIndex > -1){
         this.modalFriends.splice(mIndex, 1);
       }
     });
-    this.listService.isReady(true);
   }
 
 }
