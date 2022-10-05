@@ -63,3 +63,21 @@ body{
 .border-black{
   border: grey !important;
 }
+
+.search-bar{
+  border-right: none;
+  border-radius: 5px;
+  min-width: 100%;
+  background-color: var(--bs-dark);
+  color: white;
+  margin-bottom: 1rem;
+  outline: 1px inset #aaa;
+}
+
+.search-bar:focus-visible{
+  outline: 1px inset #EEE;
+}
+
+.search-bar:focus::placeholder{
+  color: transparent;
+}

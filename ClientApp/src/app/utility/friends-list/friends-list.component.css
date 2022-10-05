@@ -33,18 +33,6 @@
     outline: 1px solid black;
 }
 
-.search-bar{
-    border-radius: 10px;
-    min-width: 100%;
-    background-color: var(--bs-dark);
-    color: white;
-    margin-bottom: 1rem;
-}
-
-.search-bar:focus{
-    border-color: black;
-}
-
 #friend-modal.modal-static{
     transition: none;
 }
