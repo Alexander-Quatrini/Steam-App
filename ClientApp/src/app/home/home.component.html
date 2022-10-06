@@ -23,8 +23,7 @@
       </div>
 
       
-      <div class="d-lg-grid d-block">
-        <h4 class="text-primary">Filters</h4>   
+      <div class="d-lg-grid d-block">  
         <div class="row">
           <app-game-list class="col-lg-8 d-lg-grid d-block" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
           <app-friends-list class="col-lg-4 d-lg-grid d-block order-first order-lg-last" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>

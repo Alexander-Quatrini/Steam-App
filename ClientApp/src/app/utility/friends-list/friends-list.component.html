@@ -53,22 +53,22 @@
         <button type="button" class="btn btn-lg btn-dark btn-outline-info"(click)="showModal()">Add Friends</button>
     </div>
 
-    <div class="modal fade" id="friend-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="friend-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content bg-dark text-white rounded-3">
             <div class="modal-header center">
-              <h5 class="modal-title border-dark border-4 m-auto" id="exampleModalLabel">Add Steam Friends to Game List</h5>
+              <h5 class="modal-title border-dark border-4 m-auto" id="modalLabel">Add Steam Friends to Game List</h5>
               <button type="button" class="btn btn-lg btn-dark btn-outline-dark text-white d-inline-block p-0" data-bs-dismiss="modal" aria-label="Close">X</button>
               <br/>
             </div>
             <div class="container border-1 border-bottom d-block">
               <ul class="list-group list-group-horizontal overflow-auto p-1">
                 <li *ngFor="let item of modalFriends" class="list-group-item bg-dark text-white d-inline-block">
-                  <div class="row bg-secondary bg-opacity-25 d-inline-block rounded-2">
-                    <div class="col-1">
-                      <a role="button" (click)="modalRemoveFriend(item, $event)" class="link link-danger align-self-center friend-link pointer">x</a>
+                  <div class="row bg-secondary bg-opacity-25 d-md-inline-block d-inline-flex rounded-2 align-items-center">
+                    <div class="col">
+                      <a role="button" (click)="modalRemoveFriend(item, $event)" class="link link-danger friend-link pointer">x</a>
                     </div>
-                      <div class="col-10 align-self-center overflow-visible">
+                      <div class="col overflow-visible">
                           <p class="">{{item.personaname}}</p>
                       </div>
                   </div>
@@ -97,7 +97,7 @@
             </ul>
 
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer p-1">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" id="save-button" (click)="modalConfirmChanges()">Save changes</button>
             </div>
