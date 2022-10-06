@@ -21,13 +21,13 @@
       <div class="d-lg-block d-none">
         <img src="{{currentSteamUser.avatarfull}}"/>
       </div>
-      <div>
-        <app-friends-list class="d-lg-none" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
-        <h4 class="text-primary">Filters</h4>
-            
+
+      
+      <div class="d-lg-grid d-block">
+        <h4 class="text-primary">Filters</h4>   
         <div class="row">
-          <app-game-list class="col-lg-8 col-sm-12" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
-          <app-friends-list class="col-lg-4 d-none d-lg-block" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
+          <app-game-list class="col-lg-8 d-lg-grid d-block" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
+          <app-friends-list class="col-lg-4 d-lg-grid d-block order-first order-lg-last" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
         </div>
       </div>
   </ng-container>
