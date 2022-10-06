@@ -1,10 +1,12 @@
 <div class="container w-100">
-  <div *ngIf="!loggedIn && !loading">
+  <div class="text-center" *ngIf="!loggedIn && !loading">
     <h2>Don't know what game to play? <br/>
       <small class="text-muted">The Boy-Os got you covered.</small>
     </h2>
-    <h4><a [routerLink]="['/login']">Login to your Steam account to get started.</a></h4>
-    <app-image-carousel></app-image-carousel>
+    <h4 class="text-muted">Login to your Steam account to get started.</h4>
+    <div class="text-center">
+      <img class="my-2 pointer" src="https://community.cloudflare.steamstatic.com/public/images/signinthroughsteam/sits_01.png" [routerLink]="['/login']"/>
+    </div>
   </div>
   
   <ng-container *ngIf="loading">
@@ -15,17 +17,20 @@
   </ng-container>
 
   <ng-container *ngIf="!loadingError && loggedIn">
-      <div>
-        <h5>Logged in as {{currentSteamUser.personaname}}</h5>
+    <h5 class="text-center">Logged in as {{currentSteamUser.personaname}}</h5>
+      <div class="d-lg-block d-none">
         <img src="{{currentSteamUser.avatarfull}}"/>
+      </div>
+      <div>
+        <app-friends-list class="d-lg-none" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
         <h4 class="text-primary">Filters</h4>
 
             <label for="filter-checkbox">Filter to only games everyone owns?</label>
             <input (change)="updateFilter($event)" type="checkbox" id="filter-checkbox"/>
             
         <div class="row">
-          <app-game-list class="col-8" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
-          <app-friends-list class="col-4" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
+          <app-game-list class="col-lg-8 col-sm-12" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
+          <app-friends-list class="col-lg-4 d-none d-lg-block" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>
         </div>
       </div>
   </ng-container>

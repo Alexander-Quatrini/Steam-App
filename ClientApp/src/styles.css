@@ -81,3 +81,17 @@ body{
 .search-bar:focus::placeholder{
   color: transparent;
 }
+
+@media (max-width: 767.98px) {
+  .search{
+    display: block;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .search{
+    display: inline;
+    width: 50%;
+  }
+}
