@@ -22,7 +22,7 @@
 
             <label for="filter-checkbox">Filter to only games everyone owns?</label>
             <input (change)="updateFilter($event)" type="checkbox" id="filter-checkbox"/>
-
+            
         <div class="row">
           <app-game-list class="col-8" [steamID]="steamID" [sessionID]="sessionID" [personaname]="currentSteamUser.personaname ?? ''"></app-game-list>
           <app-friends-list class="col-4" [steamID]="steamID" [sessionID]="sessionID" [maxFriendsToShow]="6"></app-friends-list>

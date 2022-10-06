@@ -9,6 +9,10 @@
                 {{item.personaname + " "}} 
             </h3>
 
+            <div class="w-50 float-end">
+                <input class="search-bar w-100" id="game-search" placeholder="Search for a game..." autocomplete="off" (keyup)="searchEvent($event)"/>
+            </div>
+
             <table class="table table-dark table-striped table-hover" id="accordion-table">
                 <th class="pointer border-bottom text-center" (click)="sortList('appid', true)" [innerText]="appIDString"></th>
                 <th class="pointer border-bottom text-center" (click)="sortList('gamename', true)" [innerText]="gameNameString"></th>

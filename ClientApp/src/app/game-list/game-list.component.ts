@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { merge, Observable, Observer } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IGameList } from 'src/models/IGameList.model';
 import { IUserInfo } from 'src/models/IUserInfo.model';
 import { GameListService } from '../services/game-list-service.service';
 import { PaginationService } from '../services/pagination.service';
 import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
-import { map } from 'rxjs/operators';
+
 import { FilterService } from '../services/filter.service';
 
 @Component({
@@ -34,6 +34,7 @@ export class GameListComponent implements OnInit {
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
 
+  searchTerm: string = "";
   numberOfPages: number = 0;
   gameListObject: IGameList = {};
   filteredGameListObject: IGameList = {};
@@ -61,6 +62,7 @@ export class GameListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
     
@@ -68,11 +70,15 @@ export class GameListComponent implements OnInit {
       if(this.ready){
         this.filter = value;
         if(value){
-          this.gameListObject = this.filteredGameListObject;
+          Object.assign(this.gameListObject, this.filteredGameListObject);
         } else {
-          this.gameListObject = this.unFilteredGameListObject;
+          Object.assign(this.gameListObject, this.unFilteredGameListObject);
         }
 
+        if(this.searchTerm.length > 0){
+          this.search(this.searchTerm);
+        }
+        
         this.updateDisplay();
       }
     });
@@ -83,18 +89,22 @@ export class GameListComponent implements OnInit {
     });
     
     this.gameList.subscribe(gameList => {
-      this.unFilteredGameListObject = gameList;
+      this.unFilteredGameListObject = gameList
       this.listService.filterList()
       .then((filteredGameList) => {
         this.filteredGameListObject.games = Array.from(filteredGameList.keys());
-        this.filteredGameListObject.game_count = filteredGameList.size;
+        this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
         if(this.filter){
-          this.gameListObject = this.filteredGameListObject
+          this.gameListObject = Object.assign({}, this.filteredGameListObject);
         } else {
-          this.gameListObject = this.unFilteredGameListObject;
+          this.gameListObject = Object.assign({}, this.unFilteredGameListObject);
         }
+
+        if(this.searchTerm.length > 0){
+          this.search(this.searchTerm);
+        }
+
         this.updateDisplay();
-        return this.gameListObject;
       });
     });
 
@@ -116,6 +126,7 @@ export class GameListComponent implements OnInit {
       .then(() =>{
         this.updateDisplay();
         this.ready = true;
+    
       })
       .catch(reject => {
         console.log(reject);
@@ -137,7 +148,26 @@ export class GameListComponent implements OnInit {
         this.filteredGameListObject.games = games;
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
     });*/
+  }
 
+  searchEvent(event: Event): void{
+        let eventTarget = event.target as HTMLInputElement;
+        this.searchTerm = eventTarget.value.toLocaleLowerCase();
+        this.search(this.searchTerm);
+  }
+
+  search(searchTerm: string): void{
+    if(this.filter){
+      Object.assign(this.gameListObject, this.filteredGameListObject);
+    } else {
+      Object.assign(this.gameListObject, this.unFilteredGameListObject);
+    }
+    
+    this.gameListObject.games = this.gameListObject.games?.filter(game => 
+      game.name?.toLocaleLowerCase().includes(searchTerm));
+
+    this.gameListObject.game_count = this.gameListObject.games?.length ?? 0;
+    this.updateDisplay();
   }
 
   redirectToStorePage(appid: string | undefined)
@@ -247,6 +277,7 @@ export class GameListComponent implements OnInit {
   }
 
   updateDisplay(): void{
+
     this.pagination.update(5, this.gamesPerPage, this.gameListObject.game_count ?? 0);
     this.numberOfPages = this.pagination.getNumberPages();
     this.currentPage = 1;
