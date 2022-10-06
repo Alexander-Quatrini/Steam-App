@@ -1,8 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { IUserInfo } from 'src/models/IUserInfo.model';
-import { FilterService } from '../services/filter.service';
 import { SteamService } from '../services/steam.service';
 import { Constants } from '../util/constants.util';
 import { getCookie } from '../util/cookie.util';
@@ -25,18 +23,12 @@ export class HomeComponent implements OnInit {
   loading: boolean = false;
   filter: boolean = false;
 
-  constructor (private steamService: SteamService, private filters: FilterService)
+  constructor (private steamService: SteamService)
   {};
 
   ngOnInit(): void {
     if(!this.loggedIn){
       this.checkForSteamLogon();
-    }
-  }
-
-  updateFilter(event: Event): void{
-    if(typeof event === 'object'){
-      this.filters.setEveryone((event.target as HTMLInputElement).checked);
     }
   }
 

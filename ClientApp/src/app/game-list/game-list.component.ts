@@ -29,7 +29,7 @@ export class GameListComponent implements OnInit {
   @Input()
   personaname: string = "";
 
-  filtered: Observable<boolean>;
+  filtered: Observable<IUserInfo[]>;
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;
@@ -68,7 +68,7 @@ export class GameListComponent implements OnInit {
     
     this.filtered.subscribe(value => {
       if(this.ready){
-        this.filter = value;
+        this.filter = value.length > 1;
         if(value){
           Object.assign(this.gameListObject, this.filteredGameListObject);
         } else {
@@ -78,7 +78,7 @@ export class GameListComponent implements OnInit {
         if(this.searchTerm.length > 0){
           this.search(this.searchTerm);
         }
-        
+
         this.updateDisplay();
       }
     });
@@ -148,6 +148,15 @@ export class GameListComponent implements OnInit {
         this.filteredGameListObject.games = games;
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
     });*/
+  }
+
+  updateFilter(event: Event){
+    let eventTarget = event.target as HTMLInputElement;
+    if(eventTarget){
+      this.filter = eventTarget.checked;
+    }
+
+    this.filters.setEveryone(this.currentUsers);
   }
 
   searchEvent(event: Event): void{
