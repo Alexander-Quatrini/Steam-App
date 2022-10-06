@@ -10,13 +10,13 @@ export class GameListService {
 
   private users: BehaviorSubject<IUserInfo[]>;
   private gameList: BehaviorSubject<IGameList>;
-  private map: BehaviorSubject<Map<IGame,string[]>>;
+  private map: BehaviorSubject<Map<IGame,IUserInfo[]>>;
   private updatedList: Map<string,IGame> = new Map<string,IGame>();
   private ready: BehaviorSubject<boolean>
   constructor() { 
     this.users = new BehaviorSubject<IUserInfo[]>([]);
     this.gameList = new BehaviorSubject<IGameList>({});
-    this.map = new BehaviorSubject<Map<IGame,string[]>>(new Map<IGame, string[]>());
+    this.map = new BehaviorSubject<Map<IGame,IUserInfo[]>>(new Map<IGame, IUserInfo[]>());
     this.ready = new BehaviorSubject<boolean>(false);
   }
 
@@ -107,25 +107,35 @@ export class GameListService {
 
   }
 
-  filterList(): Promise<Map<IGame,string[]>>{
+  filterList(users?: IUserInfo[]): Promise<Map<IGame,IUserInfo[]>>{
 
+    this.ready.next(false);
     return new Promise((resolve, reject)=>{
-      let tempMap = new Map<IGame,string[]>();
+      let tempMap = new Map<IGame,IUserInfo[]>();
 
       this.gameList.value.games?.forEach(entry => {
         if(typeof entry.name === 'string' && typeof entry.owners !== 'undefined'){
-          let owners = entry.owners.map(x => {return x.name.steamid;});
+          let owners = entry.owners.map(x => x.name);
           tempMap.set(entry, owners);
         }
 
         tempMap.forEach((value, key) => {
-          if(value.length != this.users.value.length)
-          {
-            tempMap.delete(key);
+          if(users){
+            let steamIds = value.map(valueUser => valueUser.steamid);
+            if(!users.every(user => steamIds.includes(user.steamid)))
+            {
+              console.log("delete");
+              tempMap.delete(key);
+            }
+          } else {
+            if(value.length != this.users.value.length){
+              tempMap.delete(key);
+            }
           }
         })
       })
       this.map.next(tempMap);
+      this.ready.next(true);
       resolve(tempMap);
     });
   }
@@ -146,7 +156,7 @@ export class GameListService {
     return this.gameList.asObservable();
   }
 
-  getFilteredGameList(): Observable<Map<IGame,string[]>>{
+  getFilteredGameList(): Observable<Map<IGame,IUserInfo[]>>{
     return this.map.asObservable();
   }
 }

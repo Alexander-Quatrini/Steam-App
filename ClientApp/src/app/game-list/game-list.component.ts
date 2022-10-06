@@ -49,6 +49,7 @@ export class GameListComponent implements OnInit {
   previousKey: string = Constants.GAME_NAME_KEY;
   descendingToggle: boolean = true;
   currentUsers: IUserInfo[] = [];
+  currentFilteredUsers: IUserInfo[] = [];
   math = Math;
   loading: boolean = true;
   ready: boolean = false;
@@ -68,18 +69,24 @@ export class GameListComponent implements OnInit {
     
     this.filtered.subscribe(value => {
       if(this.ready){
-        this.filter = value.length > 1;
-        if(value){
-          Object.assign(this.gameListObject, this.filteredGameListObject);
-        } else {
-          Object.assign(this.gameListObject, this.unFilteredGameListObject);
-        }
+        console.log(value);
+        this.listService.filterList(value).then((filteredGameList) => {
+          this.filteredGameListObject.games = Array.from(filteredGameList.keys());
+          this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
 
-        if(this.searchTerm.length > 0){
-          this.search(this.searchTerm);
-        }
+          if(this.filter){
+            Object.assign(this.gameListObject, this.filteredGameListObject);
+          } else {
+            Object.assign(this.gameListObject, this.unFilteredGameListObject);
+          }
+          
+          if(this.searchTerm.length > 0){
+            this.search(this.searchTerm);
+          }
+  
+          this.updateDisplay();
 
-        this.updateDisplay();
+        });
       }
     });
 
@@ -90,7 +97,7 @@ export class GameListComponent implements OnInit {
     
     this.gameList.subscribe(gameList => {
       this.unFilteredGameListObject = gameList
-      this.listService.filterList()
+      this.listService.filterList(this.currentFilteredUsers)
       .then((filteredGameList) => {
         this.filteredGameListObject.games = Array.from(filteredGameList.keys());
         this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
@@ -152,11 +159,30 @@ export class GameListComponent implements OnInit {
 
   updateFilter(event: Event){
     let eventTarget = event.target as HTMLInputElement;
-    if(eventTarget){
-      this.filter = eventTarget.checked;
+    this.filter = eventTarget.checked;
+    if(eventTarget.id == "filter-checkbox"){
+      if(this.filter){
+        this.currentFilteredUsers = [...this.currentUsers]
+      } else {
+        this.currentFilteredUsers?.splice(0);
+      }
+    } else{
+      let steamID = eventTarget.id;
+      let targetUser = this.currentUsers.find(user => {
+        return user.steamid == steamID;
+      })!
+    if(eventTarget.checked){
+      this.currentFilteredUsers?.push(targetUser);
+    } else{
+      let uIndex = this.currentFilteredUsers.indexOf(targetUser);
+
+      if(uIndex > -1){
+        this.currentFilteredUsers.splice(uIndex, 1);
+      }
     }
 
-    this.filters.setEveryone(this.currentUsers);
+    }
+    this.filters.setEveryone(this.currentFilteredUsers ?? this.currentUsers);
   }
 
   searchEvent(event: Event): void{
