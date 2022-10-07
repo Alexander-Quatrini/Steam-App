@@ -20,7 +20,7 @@ export class FriendsListComponent implements OnInit {
   sessionID: string = "";
 
   @Input()
-  maxFriendsToShow: number = 6;
+  maxFriendsToShow: number = 4;
 
   API_PORT = Constants.apiPort;
   API_URL = Constants.apiUrl;

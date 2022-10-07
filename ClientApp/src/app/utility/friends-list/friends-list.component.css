@@ -27,10 +27,14 @@
     border: none;
 }
     
-#friend-modal ul::-webkit-scrollbar-thumb {
+#friend-modal ul::-webkit-scrollbar-thumb{
     border-radius: 5px;
     background-color: gray;
     outline: 1px solid black;
+}
+
+#friend-modal ul::-webkit-scrollbar-corner{
+    background-color: var(--bg-dark);
 }
 
 #friend-modal.modal-static{
@@ -39,4 +43,8 @@
 
 .modal-close{
     line-height: 0;
+}
+
+#friend-modal ul.list-group#modal-friends{
+    max-height: 25vh;
 }
