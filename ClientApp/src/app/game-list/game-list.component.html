@@ -67,34 +67,34 @@
                 </tbody>
             </table>
             
-            <p class="text-muted text-end">Showing games {{math.min((currentPage - 1) * 15 + 1, currentGameList.game_count ?? 0)}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
+            <p aria-label="Game Count" class="text-muted text-end">Showing games {{math.min((currentPage - 1) * 15 + 1, currentGameList.game_count ?? 0)}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
             
             <nav class="d-none d-lg-block" aria-details="Game List Navigation">
                 <ul class="pagination pagination-lg justify-content-center">
-                    <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
+                    <li tabindex="0" (keyup.enter)="currentPage = 1; changePage(currentPage)" class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
                         (click)="currentPage = 1; changePage(currentPage)">First (1)</a>
                     </li>
-
-                    <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
+                    
+                    <li tabindex="0" (keyup.enter)="currentPage = n; changePage(currentPage)" class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
                         <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a>
                     </li>
-                        
-                    <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
-                            (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a>
+                    
+                    <li tabindex="0" (keyup.enter)="currentPage = numberOfPages; changePage(currentPage)" class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
+                        (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a>
                     </li>
                 </ul>
             </nav>
             <nav class="d-lg-none">
-                <ul class="pagination pagination justify-content-center">
-                    <li class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
+                <ul class="pagination justify-content-center">
+                    <li tabindex="0" (keyup.enter)="currentPage = 1; changePage(currentPage)" class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
                         (click)="currentPage = 1; changePage(currentPage)">First (1)</a>
                     </li>
                     
-                    <li class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
+                    <li tabindex="0" (keyup.enter)="currentPage = n; changePage(currentPage)" class="page-item {{n == currentPage ? 'disabled' : ''}}" *ngFor="let n of linkArray;">
                         <a class="page-link" (click)="currentPage = n; changePage(currentPage)">{{n}}</a>
                     </li>
                     
-                    <li class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
+                    <li tabindex="0" (keyup.enter)="currentPage = numberOfPages; changePage(currentPage)" class="page-item {{linkArray[linkArray.length - 1] == numberOfPages ? 'disabled hidden' : ''}}"><a class="page-link" 
                         (click)="currentPage = numberOfPages; changePage(currentPage)">Last ({{numberOfPages}})</a>
                     </li>
                 </ul>
