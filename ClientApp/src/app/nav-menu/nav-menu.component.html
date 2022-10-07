@@ -19,20 +19,20 @@
         class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
         [ngClass]="{ show: isExpanded }"
       >
-        <ul class="navbar-nav flex-grow">
+        <ul aria-label="Navigation links" class="navbar-nav flex-grow">
           <li
             class="nav-item"
             [routerLinkActive]="['link-active']"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            <a class="nav-link text-light" [routerLink]="['/']">Home</a>
+            <a aria-label="Home" class="nav-link text-light" [routerLink]="['/']">Home</a>
           </li>
           <li *ngIf="!loggedIn" class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-light" [routerLink]="['/login']"
+            <a aria-label="Login to Steam account." class="nav-link text-light" [routerLink]="['/login']"
               >Login</a
             >
           </li>
-          <li *ngIf="loggedIn" class="nav-item" [routerLinkActive]="['link-active']">
+          <li aria-label="Logout of Steam account." *ngIf="loggedIn" class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-light" [routerLink]="['/logout']"
               >Logout</a
             >

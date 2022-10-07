@@ -318,6 +318,9 @@ export class GameListComponent implements OnInit {
     let game = this.currentGameList.games?.find(x => x.appid == appid ?? undefined)
     if(game){
       game.expanded = !game.expanded;
+      if(!game.expanded){
+        document.getElementById(game.appid ?? '')?.focus();
+      }
     }
   }
 
