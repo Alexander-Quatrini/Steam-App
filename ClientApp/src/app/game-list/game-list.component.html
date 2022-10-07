@@ -3,26 +3,40 @@
     <div class="container-fluid w-100 my-5">
 
         <ng-container *ngIf="ready; else loading">
+
+            <div>
+                <h3 class="text-center d-inline">Game List For</h3>
+                <h3 class="d-inline" *ngFor="let item of currentUsers">
+                    {{item.personaname + " "}} 
+                </h3>
+            </div>
+
             <ng-container *ngIf="currentUsers.length > 1">
-                <div class="d-inline">
-                    <p>Filter by owner: </p>
-                    <label for="everyone">Select All</label>
-                    <input class="ms-1 me-2" id="everyone" type="checkbox" (change)="updateFilter($event)"/>
-                    <div  class="owners" *ngFor="let user of currentUsers">
-                        <label for="{{user.personaname}}-filter">{{user.personaname}}</label>
-                        <input class="ms-1 me-2 individual-owner" (change)="updateFilter($event)" type="checkbox" id="{{user.steamid}}"/>
-                        <br class="d-lg-none d-block"/>
+                <div class="d-block">
+
+                    <div class="d-inline-block">
+
+                        <p class="m-0">Filter by owner: </p>
+                        <ul class="list-inline list-group-horizontal mb-2">
+                            <li (click)="updateFilter(selectAll)" class="list-inline-item {{(selectAll.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary text-end me-1 p-2 ">
+                                <a role="button" class="link link-info table-link mx-1">{{(selectAll.checked) ? "x" : "+"}}</a>
+                                <label for="everyone">Select All</label>
+                                <input #selectAll class="ms-1 me-2 p-2 visually-hidden" id="everyone" type="checkbox"/>
+                            </li>
+                            
+                            <li  (click)="updateFilter(selectUser)" class="list-inline-item {{(selectUser.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary owners text-end me-1 p-2" *ngFor="let user of currentUsers">
+                                <a role="button" class="link link-info table-link mx-1">{{(selectUser.checked) ? "x" : "+"}}</a>
+                                <label for="{{user.personaname}}-filter">{{user.personaname}}</label>
+                                <input #selectUser class="ms-1 me-2 individual-owner visually-hidden"  type="checkbox" id="{{user.steamid}}"/>
+                                <br class="d-lg-none d-block"/>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </ng-container>
 
-            <h3 class="text-center d-inline">Game List For</h3>
-            <h3 class="d-inline" *ngFor="let item of currentUsers">
-                {{item.personaname + " "}} 
-            </h3>
-
             <div class="search float-end">
-                <input class="search-bar w-100" id="game-search" placeholder="Search for a game..." autocomplete="off" (keyup)="searchEvent($event)"/>
+                <input class="search-bar" id="game-search" placeholder="Search for a game..." autocomplete="off" (keyup)="searchEvent($event)"/>
             </div>
 
             <table class="table table-dark table-striped table-hover" id="accordion-table">
@@ -36,7 +50,7 @@
                             <tr class="pointer" (click)="toggleExpanded((item.appid))">
                                 <td class="d-lg-table-cell d-none">{{item.appid}}</td>
                                 <td><img *ngIf="item.img_icon_url != ''" src="https://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
-                                <td class="d-none d-lg-table-cell"><div class="every-third" *ngFor="let user of item.owners"><img src="{{user.name.avatar}}" height="25" width="25"/></div></td>
+                                <td class="d-none d-lg-table-cell"><div class="every-third" *ngFor="let user of item.owners"><img title="{{user.name.personaname}}" src="{{user.name.avatar}}" height="25" width="25"/></div></td>
                                 <td class="text-center align-middle d-none d-md-table-cell"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
                                 <td class="text-center align-middle text-muted font-monospace">&#9654;</td>    
                             </tr>
@@ -44,7 +58,7 @@
                                 <td class="my-5" colspan="5">
                                     <h5 class="text-center text-muted m-auto">{{item.name}}</h5>
                                     <div class="align-center">
-                                        <div class="float-end" *ngFor="let user of item.owners"><img class="every-third" src="{{user.name.avatar}}" height="40" width="40"/></div>
+                                        <div class="float-end" *ngFor="let user of item.owners"><img class="every-third" title="{{user.name.personaname}}" src="{{user.name.avatar}}" height="40" width="40"/></div>
                                         <p class="mx-2">Combined playtime: {{math.trunc(item.playtime_forever ?? 0)}} hour(s).</p>
                                     </div>
                                 </td>

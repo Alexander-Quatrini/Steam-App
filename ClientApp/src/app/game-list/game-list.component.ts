@@ -146,17 +146,26 @@ export class GameListComponent implements OnInit {
     });*/
   }
 
-  updateFilter(event: Event){
-    let eventTarget = event.target as HTMLInputElement;
+  updateFilter(element: HTMLInputElement){
+    const owner = element.parentElement?.getElementsByClassName('individual-owner');
     let checks = document.querySelectorAll("input.individual-owner");
-    if(eventTarget.id == "everyone"){
+    if(element.id == "everyone"){
+        element.checked = !element.checked;
         this.currentFilteredUsers = [...this.currentUsers]
-        checks.forEach((element => {
-          let checkbox = element as HTMLInputElement;
-            checkbox.checked = eventTarget.checked;
+        checks.forEach((checkElement => {
+          let checkbox = checkElement as HTMLInputElement;
+            checkbox.checked = element.checked;
         }));
       } 
+    
+      if(owner && owner.length > 0){
+        let checkBox = owner[0] as HTMLInputElement;
+        checkBox.checked = !checkBox.checked;
+      }
 
+    let selectAll = document.getElementById('everyone') as HTMLInputElement;
+    selectAll.checked = true;
+      
       this.currentFilteredUsers = [];
 
       checks.forEach(element => {
@@ -164,8 +173,8 @@ export class GameListComponent implements OnInit {
         if(checkbox.checked){
           this.currentFilteredUsers.push(this.currentUsers.find(user => user.steamid == checkbox.id)!) 
         } else {
+          selectAll.checked = false;
           let uIndex = this.currentFilteredUsers.findIndex(user => user.steamid == checkbox.id);
-
           if(uIndex > -1){
             this.currentFilteredUsers.splice(uIndex, 1);
           } 
