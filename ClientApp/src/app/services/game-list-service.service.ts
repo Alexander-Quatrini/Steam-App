@@ -107,10 +107,15 @@ export class GameListService {
 
   }
 
-  filterList(users?: IUserInfo[]): Promise<Map<IGame,IUserInfo[]>>{
+  filterList(users?: IUserInfo[]): Promise<IGameList>{
 
     this.ready.next(false);
     return new Promise((resolve, reject)=>{
+
+      if(!users){
+        resolve(this.gameList.value);
+      }
+
       let tempMap = new Map<IGame,IUserInfo[]>();
 
       this.gameList.value.games?.forEach(entry => {
@@ -124,7 +129,6 @@ export class GameListService {
             let steamIds = value.map(valueUser => valueUser.steamid);
             if(!users.every(user => steamIds.includes(user.steamid)))
             {
-              console.log("delete");
               tempMap.delete(key);
             }
           } else {
@@ -136,7 +140,10 @@ export class GameListService {
       })
       this.map.next(tempMap);
       this.ready.next(true);
-      resolve(tempMap);
+      resolve({
+        games: Array.from(tempMap.keys()),
+        game_count: tempMap.size
+      });
     });
   }
 

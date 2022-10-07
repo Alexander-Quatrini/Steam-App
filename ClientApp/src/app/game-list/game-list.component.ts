@@ -63,22 +63,16 @@ export class GameListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     var n = this.steamID.lastIndexOf('/');
     var IDSub = this.steamID.substring(n + 1);
     
     this.filtered.subscribe(value => {
+      console.log(value);
       if(this.ready){
-        console.log(value);
-        this.listService.filterList(value).then((filteredGameList) => {
-          this.filteredGameListObject.games = Array.from(filteredGameList.keys());
-          this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
+        this.listService.filterList((value.length > 0) ? value : undefined).then((filteredGameList) => {
+          this.filteredGameListObject = filteredGameList;
 
-          if(this.filter){
-            Object.assign(this.gameListObject, this.filteredGameListObject);
-          } else {
-            Object.assign(this.gameListObject, this.unFilteredGameListObject);
-          }
+          Object.assign(this.gameListObject, this.filteredGameListObject);
           
           if(this.searchTerm.length > 0){
             this.search(this.searchTerm);
@@ -91,21 +85,16 @@ export class GameListComponent implements OnInit {
     });
 
     this.listService.getUserList().subscribe(users => {
-      console.log(users);
       this.currentUsers = users;
     });
     
     this.gameList.subscribe(gameList => {
-      this.unFilteredGameListObject = gameList
       this.listService.filterList(this.currentFilteredUsers)
       .then((filteredGameList) => {
-        this.filteredGameListObject.games = Array.from(filteredGameList.keys());
-        this.filteredGameListObject.game_count = this.filteredGameListObject.games.length;
-        if(this.filter){
-          this.gameListObject = Object.assign({}, this.filteredGameListObject);
-        } else {
-          this.gameListObject = Object.assign({}, this.unFilteredGameListObject);
-        }
+        
+        this.filteredGameListObject = filteredGameList;
+        this.gameListObject = Object.assign({}, this.filteredGameListObject);
+
 
         if(this.searchTerm.length > 0){
           this.search(this.searchTerm);
@@ -159,31 +148,32 @@ export class GameListComponent implements OnInit {
 
   updateFilter(event: Event){
     let eventTarget = event.target as HTMLInputElement;
-    this.filter = eventTarget.checked;
-    if(eventTarget.id == "filter-checkbox"){
-      if(this.filter){
+    let checks = document.querySelectorAll("input.individual-owner");
+    if(eventTarget.id == "everyone"){
         this.currentFilteredUsers = [...this.currentUsers]
-      } else {
-        this.currentFilteredUsers?.splice(0);
-      }
-    } else{
-      let steamID = eventTarget.id;
-      let targetUser = this.currentUsers.find(user => {
-        return user.steamid == steamID;
-      })!
-    if(eventTarget.checked){
-      this.currentFilteredUsers?.push(targetUser);
-    } else{
-      let uIndex = this.currentFilteredUsers.indexOf(targetUser);
+        checks.forEach((element => {
+          let checkbox = element as HTMLInputElement;
+            checkbox.checked = eventTarget.checked;
+        }));
+      } 
 
-      if(uIndex > -1){
-        this.currentFilteredUsers.splice(uIndex, 1);
-      }
-    }
+      this.currentFilteredUsers = [];
 
+      checks.forEach(element => {
+        let checkbox = element as HTMLInputElement;
+        if(checkbox.checked){
+          this.currentFilteredUsers.push(this.currentUsers.find(user => user.steamid == checkbox.id)!) 
+        } else {
+          let uIndex = this.currentFilteredUsers.findIndex(user => user.steamid == checkbox.id);
+
+          if(uIndex > -1){
+            this.currentFilteredUsers.splice(uIndex, 1);
+          } 
+        }
+      });
+
+      this.filters.setEveryone(this.currentFilteredUsers ?? this.currentUsers);
     }
-    this.filters.setEveryone(this.currentFilteredUsers ?? this.currentUsers);
-  }
 
   searchEvent(event: Event): void{
         let eventTarget = event.target as HTMLInputElement;
@@ -192,11 +182,8 @@ export class GameListComponent implements OnInit {
   }
 
   search(searchTerm: string): void{
-    if(this.filter){
-      Object.assign(this.gameListObject, this.filteredGameListObject);
-    } else {
-      Object.assign(this.gameListObject, this.unFilteredGameListObject);
-    }
+    
+    Object.assign(this.gameListObject, this.filteredGameListObject);
     
     this.gameListObject.games = this.gameListObject.games?.filter(game => 
       game.name?.toLocaleLowerCase().includes(searchTerm));
