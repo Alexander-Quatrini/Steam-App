@@ -36,3 +36,7 @@
 #friend-modal.modal-static{
     transition: none;
 }
+
+.modal-close{
+    line-height: 0;
+}

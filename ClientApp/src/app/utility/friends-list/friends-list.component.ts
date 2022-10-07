@@ -60,7 +60,7 @@ export class FriendsListComponent implements OnInit {
       return this.steamService.getSteamUsersFromIDs(friend);
     })
     .then(users => {
-      this.friendList = this.modalFriendsList = users;
+      this.friendList = this.modalFriendsList = users.sort((a,b)=> a.personaname!.localeCompare(b.personaname!));
       this.ready = true;
     })
     .catch(error => {
