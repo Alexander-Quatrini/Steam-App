@@ -123,7 +123,6 @@ export class FriendsListComponent implements OnInit {
 
       if(index > -1){
         this.modalFriendsList.splice(index, 1);
-        console.log("splice");
       }
 
       let rIndex = this.friendsToRemove.indexOf(user);
@@ -131,8 +130,6 @@ export class FriendsListComponent implements OnInit {
         this.friendsToRemove.splice(rIndex, 1);
       }
     }
-
-    console.log(this.friendsToAdd);
   }
 
   modalRemoveFriend(user: IUserInfo, event: Event): void{
@@ -175,10 +172,7 @@ export class FriendsListComponent implements OnInit {
   addFriendToGameList(friends: IUserInfo[]): void {
     var gameList: IGameList = {};
     
-    console.log("Called");
-
     friends.map(friend => {
-      console.log(friend);
       let index = this.friendListAbridged.indexOf(friend);
 
   

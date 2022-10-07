@@ -67,7 +67,6 @@ export class GameListComponent implements OnInit {
     var IDSub = this.steamID.substring(n + 1);
     
     this.filtered.subscribe(value => {
-      console.log(value);
       if(this.ready){
         this.listService.filterList((value.length > 0) ? value : undefined).then((filteredGameList) => {
           this.filteredGameListObject = filteredGameList;

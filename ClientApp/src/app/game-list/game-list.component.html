@@ -20,7 +20,7 @@
                         <ul class="list-inline list-group-horizontal mb-2">
                             <li (click)="updateFilter(selectAll)" class="list-inline-item {{(selectAll.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary text-end me-1 p-2 ">
                                 <a role="button" class="link link-info table-link mx-1">{{(selectAll.checked) ? "x" : "+"}}</a>
-                                <label for="everyone">Select All</label>
+                                <label for="everyone">{{(selectAll.checked) ? "Deselect All" : "Select All"}}</label>
                                 <input #selectAll class="ms-1 me-2 p-2 visually-hidden" id="everyone" type="checkbox"/>
                             </li>
                             
