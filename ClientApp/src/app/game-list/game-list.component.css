@@ -59,3 +59,7 @@ div.every-third{
 .every-third:nth-child(3n + 1){
     clear: left;
 }
+
+.select-owner-filter:focus{
+    outline: 2px solid white;
+}

@@ -4,7 +4,7 @@
 
         <ng-container *ngIf="ready; else loading">
 
-            <div>
+            <div class="my-2">
                 <h3 class="text-center d-inline">Game List For</h3>
                 <h3 class="d-inline" *ngFor="let item of currentUsers">
                     {{item.personaname + " "}} 
@@ -18,16 +18,18 @@
 
                         <p class="m-0">Filter by owner: </p>
                         <ul class="list-inline list-group-horizontal mb-2">
-                            <li (click)="updateFilter(selectAll)" class="list-inline-item {{(selectAll.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary text-end me-1 p-2 ">
+                            <li tabindex="0" (keydown.enter)="updateFilter(selectAll)" (click)="updateFilter(selectAll)" 
+                            class="list-inline-item {{(selectAll.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary text-end me-1 p-2 select-owner-filter">
                                 <a role="button" class="link link-info table-link mx-1">{{(selectAll.checked) ? "x" : "+"}}</a>
                                 <label for="everyone">{{(selectAll.checked) ? "Deselect All" : "Select All"}}</label>
-                                <input #selectAll class="ms-1 me-2 p-2 visually-hidden" id="everyone" type="checkbox"/>
+                                <input #selectAll tabindex="-1" class="ms-1 me-2 p-2 visually-hidden" id="everyone" type="checkbox"/>
                             </li>
                             
-                            <li  (click)="updateFilter(selectUser)" class="list-inline-item {{(selectUser.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary owners text-end me-1 p-2" *ngFor="let user of currentUsers">
+                            <li tabindex="0" (keydown.enter)="updateFilter(selectUser)" (click)="updateFilter(selectUser)" 
+                            class="list-inline-item {{(selectUser.checked) ? 'bg-secondary' : 'bg-dark'}} text-bg-primary owners text-end me-1 p-2 select-owner-filter" *ngFor="let user of currentUsers">
                                 <a role="button" class="link link-info table-link mx-1">{{(selectUser.checked) ? "x" : "+"}}</a>
                                 <label for="{{user.personaname}}-filter">{{user.personaname}}</label>
-                                <input #selectUser class="ms-1 me-2 individual-owner visually-hidden"  type="checkbox" id="{{user.steamid}}"/>
+                                <input #selectUser tabindex="-1" class="ms-1 me-2 individual-owner visually-hidden"  type="checkbox" id="{{user.steamid}}"/>
                                 <br class="d-lg-none d-block"/>
                             </li>
                         </ul>
@@ -35,7 +37,7 @@
                 </div>
             </ng-container>
 
-            <div class="search float-end">
+            <div class="search float-start">
                 <input class="search-bar" id="game-search" placeholder="Search for a game..." autocomplete="off" (keyup)="searchEvent($event)"/>
             </div>
 
