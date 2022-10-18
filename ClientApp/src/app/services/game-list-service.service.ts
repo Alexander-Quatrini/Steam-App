@@ -49,18 +49,18 @@ export class GameListService {
       let existingGame = this.updatedList.get(originalGame.appid ?? "");
       if(typeof existingGame !== 'undefined'){
           let existingOwners = existingGame.owners;
-          let playtime = existingGame.playtime_forever ?? 0;
+          let playtime = existingGame.total_playtime ?? 0;
           originalGame.owners.forEach(original => {
             existingOwners.push(original);
             playtime += original.playtime;
           })
           if(existingOwners.length > 0){
-            this.updatedList.set(originalGame.appid, {...existingGame, owners: existingOwners, playtime_forever: playtime});
+            this.updatedList.set(originalGame.appid, {...existingGame, owners: existingOwners, total_playtime: playtime});
           } else {
             this.updatedList.delete(originalGame.appid);
           }
       } else{
-        this.updatedList.set(originalGame.appid, originalGame);
+        this.updatedList.set(originalGame.appid, {...originalGame, total_playtime: originalGame.playtime_forever ?? 0});
       }
     }
     
@@ -84,7 +84,7 @@ export class GameListService {
 
       newGames = this.gameList.value.games?.filter((game) => {
         let owners = game.owners.filter(owner => owner.name != steamuser);
-        game.owners = owners;
+        game.owners = [...owners];
         game.total_playtime = 0;
         game.owners.forEach(owner => game.total_playtime += owner.playtime);
   
