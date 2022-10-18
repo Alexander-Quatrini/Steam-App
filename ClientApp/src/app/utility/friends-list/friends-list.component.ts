@@ -35,7 +35,7 @@ export class FriendsListComponent implements OnInit {
   friendsToAdd: IUserInfo[] = [];
   currentUsers: IUserInfo[] = [];
   added: IUserInfo[] = [];
-
+  searchBar: HTMLInputElement = HTMLInputElement.prototype;
   modal: any;
   ready: boolean = true;
 
@@ -43,7 +43,7 @@ export class FriendsListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let searchBar = document.getElementById('search-bar') as HTMLInputElement;
+    this.searchBar = document.getElementById('search-bar')! as HTMLInputElement;
 
     var id = this.steamID.substring(this.steamID.lastIndexOf('/') + 1);
 
@@ -84,14 +84,22 @@ export class FriendsListComponent implements OnInit {
       let eventTarget = event.target as HTMLElement;
       if(eventTarget && (eventTarget.id != 'save-button')){
         this.friendsToAdd.forEach(friend => {this.modalFriendsList.push(friend);})
-        searchBar.value = "";
+        this.searchBar.value = "";
         this.modalFriends = [];
         this.friendsToRemove = [];
         this.friendsToAdd = [];
+        this.modalFriendsList = [...this.friendList];
       }
     })
 
-    searchBar?.addEventListener('keyup', event=> {
+    this.searchBar.addEventListener('keyup', event=> {
+      let eventTarget = event.target as HTMLInputElement;
+      let searchTerm = eventTarget.value.toLocaleLowerCase();
+
+      this.modalFriendsList = this.friendList.filter(friend => friend.personaname?.toLocaleLowerCase().includes(searchTerm))
+    });
+
+    this.searchBar.addEventListener('change', event=> {
       let eventTarget = event.target as HTMLInputElement;
       let searchTerm = eventTarget.value.toLocaleLowerCase();
 
@@ -165,6 +173,7 @@ export class FriendsListComponent implements OnInit {
     this.removeFriendFromGameList(this.friendsToRemove);
     this.friendsToRemove = [];
     this.friendsToAdd = [];
+    this.searchBar.value = "";
     this.ready = true;
     this.listService.isReady(true);
   }
