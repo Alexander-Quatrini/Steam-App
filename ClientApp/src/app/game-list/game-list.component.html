@@ -45,6 +45,7 @@
                 <th class="pointer border-bottom text-center d-none d-lg-table-cell" (click)="sortList('appid', true)" [innerText]="appIDString"></th>
                 <th class="pointer border-bottom text-center" (click)="sortList('gamename', true)" [innerText]="gameNameString"></th>
                 <th class="border-bottom text-center d-none d-lg-table-cell">Owned By:</th>
+                <th class="border-bottom text-center d-none d-lg-table-cell">Combined Playtime</th>
                 <th class="store-page-header border-bottom text-center d-none d-md-table-cell">Store Page</th>
                 <th class="pointer border-bottom text-center"></th>
                 <tbody>
@@ -53,11 +54,12 @@
                                 <td class="d-lg-table-cell d-none">{{item.appid}}</td>
                                 <td><img *ngIf="item.img_icon_url != ''" src="https://media.steampowered.com/steamcommunity/public/images/apps/{{item.appid}}/{{item.img_icon_url}}.jpg"/> {{item.name}}</td>
                                 <td class="d-none d-lg-table-cell"><div class="every-third" *ngFor="let user of item.owners"><img title="{{user.name.personaname}}" src="{{user.name.avatar}}" height="25" width="25"/></div></td>
+                                <td class="d-none d-lg-table-cell">{{math.trunc(item.playtime_forever ?? 0)}} hr(s)</td>
                                 <td class="text-center align-middle d-none d-md-table-cell"><a aria-label="Store Page Link" class="link-info link table-link" (click)="redirectToStorePage(item.appid)">&#x29c9;</a></td>
                                 <td class="text-center align-middle text-muted font-monospace">&#9654;</td>    
                             </tr>
                             <tr tabindex="0" *ngIf="item.expanded" (keyup.enter)="toggleExpanded(item.appid)" class="align-middle">
-                                <td class="my-5" colspan="5">
+                                <td class="my-5" colspan="6">
                                     <h5 class="text-center text-muted m-auto">{{item.name}}</h5>
                                     <div class="align-center">
                                         <div class="float-end" *ngFor="let user of item.owners"><img class="every-third" title="{{user.name.personaname}}" src="{{user.name.avatar}}" height="40" width="40"/></div>
@@ -71,7 +73,7 @@
             
             <p aria-label="Game Count" class="text-muted text-end">Showing games {{math.min((currentPage - 1) * 15 + 1, currentGameList.game_count ?? 0)}}-{{math.min(currentPage * 15, currentGameList.game_count ?? 0)}} of {{currentGameList.game_count}}</p>
             
-            <nav class="d-none d-lg-block" aria-details="Game List Navigation">
+            <nav class="d-none d-lg-block" aria-label="Game List Navigation">
                 <ul class="pagination pagination-lg justify-content-center">
                     <li tabindex="0" (keyup.enter)="currentPage = 1; changePage(currentPage)" class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
                         (click)="currentPage = 1; changePage(currentPage)">First (1)</a>
@@ -86,7 +88,7 @@
                     </li>
                 </ul>
             </nav>
-            <nav class="d-lg-none">
+            <nav class="d-lg-none" aria-label="Game List Navigation">
                 <ul class="pagination justify-content-center">
                     <li tabindex="0" (keyup.enter)="currentPage = 1; changePage(currentPage)" class="page-item {{linkArray[0] == 1 ? 'disabled hidden' : ''}}"><a class="page-link" 
                         (click)="currentPage = 1; changePage(currentPage)">First (1)</a>
