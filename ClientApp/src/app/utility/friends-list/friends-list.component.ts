@@ -51,13 +51,14 @@ export class FriendsListComponent implements OnInit {
       this.currentUsers = users;
     });
 
-    this.steamService.getFriendsListFromID(id).then(data =>
-    {
-      this.friendIDs = data.map(friend => friend.steamid);
-      return this.friendIDs;
+    this.steamService.getSteamUserFromID(id).then(user => {
+      this.added.push(user);
+      return user.steamid;
+    }).then(id => {
+      return this.steamService.getFriendsListFromID(id);
     })
     .then(friend => {
-      return this.steamService.getSteamUsersFromIDs(friend);
+      return this.steamService.getSteamUsersFromIDs(friend.map(user => user.steamid));
     })
     .then(users => {
       this.friendList = this.modalFriendsList = users.sort((a,b)=> a.personaname!.localeCompare(b.personaname!));
@@ -109,16 +110,18 @@ export class FriendsListComponent implements OnInit {
 
   showModal(): void{
     if(this.ready){
-    this.modal.show();
-    this.currentUsers.map(user => {
-      if(!this.modalFriends.includes(user)){
-        this.modalFriends.push(user);
-        let fIndex = this.modalFriendsList.indexOf(user);
-        if(fIndex > -1){
-          this.modalFriendsList.splice(fIndex,1);
+
+      this.currentUsers.map(user => {
+        if(!this.modalFriends.includes(user)){
+          this.modalFriends.push(user);
+          let fIndex = this.modalFriendsList.indexOf(user);
+          if(fIndex > -1){
+            this.modalFriendsList.splice(fIndex,1);
+          }
         }
-      }
       });
+
+    this.modal.show();
   }
 }
 
@@ -179,6 +182,7 @@ export class FriendsListComponent implements OnInit {
   }
 
   addFriendToGameList(friends: IUserInfo[]): void {
+    this.ready = false;
     var gameList: IGameList = {};
     
     friends.map(friend => {
@@ -199,9 +203,12 @@ export class FriendsListComponent implements OnInit {
       });
       this.added.push(friend);
     });
+
+    this.ready = true;
   }
 
   removeFriendFromGameList(friends: IUserInfo[]){
+    this.ready = false;
     friends.map(friend => {
       this.listService.removeUser(friend);
       let aIndex = this.added.indexOf(friend);
@@ -222,6 +229,8 @@ export class FriendsListComponent implements OnInit {
         this.modalFriends.splice(mIndex, 1);
       }
     });
+
+    this.ready = true;
   }
 
 }
