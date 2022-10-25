@@ -42,12 +42,14 @@
             </div>
 
             <table class="table table-dark table-striped table-hover" id="accordion-table">
-                <th class="pointer border-bottom text-center d-none d-lg-table-cell" (click)="sortList('appid', true)" [innerText]="appIDString"></th>
-                <th class="pointer border-bottom text-center" (click)="sortList('gamename', true)" [innerText]="gameNameString"></th>
-                <th class="border-bottom text-center d-none d-md-table-cell">Owned By:</th>
-                <th class="border-bottom text-center d-none d-xxl-table-cell">Total Playtime</th>
-                <th class="store-page-header border-bottom text-center d-none d-md-table-cell">Store Page</th>
-                <th class="pointer border-bottom text-center"></th>
+                <tr>
+                    <th class="pointer border-bottom text-center d-none d-lg-table-cell" (click)="sortList('appid', true)" [innerText]="appIDString"></th>
+                    <th class="pointer border-bottom text-center" (click)="sortList('gamename', true)" [innerText]="gameNameString"></th>
+                    <th class="border-bottom text-center d-none d-md-table-cell">Owned By:</th>
+                    <th class="border-bottom text-center d-none d-xxl-table-cell">Total Playtime</th>
+                    <th class="store-page-header border-bottom text-center d-none d-md-table-cell">Store Page</th>
+                    <th class="pointer border-bottom text-center"></th>
+                </tr>
                 <tbody>
                         <ng-container id="accordion-parent" *ngFor="let item of currentGameList.games">
                             <tr tabindex="0" id="{{item.appid}}" role="button" class="pointer" (keyup.enter)="toggleExpanded(item.appid)" (click)="toggleExpanded(item.appid)">
