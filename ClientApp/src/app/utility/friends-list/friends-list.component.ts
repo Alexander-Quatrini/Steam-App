@@ -49,14 +49,15 @@ export class FriendsListComponent implements OnInit {
 
     this.listService.getUserList().subscribe(users => {
       this.currentUsers = users;
+
+      users.forEach(user => {
+        if(!this.added.includes(user)){
+          this.added.push(user);
+        }
+      })
     });
 
-    this.steamService.getSteamUserFromID(id).then(user => {
-      this.added.push(user);
-      return user.steamid;
-    }).then(id => {
-      return this.steamService.getFriendsListFromID(id);
-    })
+    this.steamService.getFriendsListFromID(id)
     .then(friend => {
       return this.steamService.getSteamUsersFromIDs(friend.map(user => user.steamid));
     })

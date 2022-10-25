@@ -16,8 +16,8 @@
             <div class="col-8">
               <p>{{item.personaname}}</p>
             </div>
-            <div class="col-1">
-              <a (click)="removeFriendFromGameList([item])" class="link link-info friend-link pointer">&#215;</a>
+            <div tabindex="0" (keyup.enter)="removeFriendFromGameList([item])" class="col-1">
+              <a (click)="removeFriendFromGameList([item])"  class="link link-info friend-link pointer">&#215;</a>
             </div>
           </div>
         </li>

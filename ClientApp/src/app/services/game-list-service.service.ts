@@ -74,7 +74,6 @@ export class GameListService {
 
     }
   removeUser(steamuser: IUserInfo): void{
-    
     let index = this.users.value.indexOf(steamuser);
     let newGames: IGame[] = [];
 
@@ -83,7 +82,7 @@ export class GameListService {
       this.users.next(this.users.value);
 
       newGames = this.gameList.value.games?.filter((game) => {
-        let owners = game.owners.filter(owner => owner.name != steamuser);
+        let owners = game.owners.filter(owner => owner.name.steamid != steamuser.steamid);
         game.owners = [...owners];
         game.total_playtime = 0;
         game.owners.forEach(owner => game.total_playtime += owner.playtime);
