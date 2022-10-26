@@ -74,4 +74,13 @@ div.every-third{
 
 .graph-bar{
     flex: 0 0 auto;
+    background-color: var(--bs-primary);
+}
+
+span:nth-child(odd) .graph-bar{
+    background-color: purple;
+}
+
+span.owner-playtime{
+    background-color: #222;
 }
