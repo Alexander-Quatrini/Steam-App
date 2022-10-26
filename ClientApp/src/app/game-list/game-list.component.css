@@ -67,3 +67,11 @@ div.every-third{
 .select-owner-filter:focus{
     outline: 2px solid white;
 }
+
+.graph-bg{
+    height: 20vh;
+}
+
+.graph-bar{
+    flex: 0 0 auto;
+}

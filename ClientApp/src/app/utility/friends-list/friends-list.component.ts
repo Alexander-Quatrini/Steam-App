@@ -109,6 +109,7 @@ export class FriendsListComponent implements OnInit {
     })
   }
 
+  // TODO: Modal displays when it is not ready to be displayed
   showModal(): void{
     if(this.ready){
 
@@ -121,7 +122,6 @@ export class FriendsListComponent implements OnInit {
           }
         }
       });
-
     this.modal.show();
   }
 }
@@ -187,6 +187,7 @@ export class FriendsListComponent implements OnInit {
     var gameList: IGameList = {};
     
     friends.map(friend => {
+
       let index = this.friendListAbridged.indexOf(friend);
 
   
@@ -202,7 +203,12 @@ export class FriendsListComponent implements OnInit {
         })
         this.listService.addUser(friend, gameList);
       });
-      this.added.push(friend);
+
+      let aIndex = this.added.indexOf(friend)
+      
+      if(aIndex == -1){
+        this.added.push(friend);
+      }
     });
 
     this.ready = true;

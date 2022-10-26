@@ -67,6 +67,14 @@
                                         <div class="float-end" *ngFor="let user of item.owners"><img class="every-third" title="{{user.name.personaname}}" src="{{user.name.avatar}}" height="40" width="40"/></div>
                                         <p class="mx-2">Combined playtime: {{math.trunc(item.total_playtime)}} hour(s).</p>
                                     </div>
+                                    <div class="align-center center">
+                                        <span class="d-inline-block m-5" *ngFor="let owner of item.owners">
+                                            <p>{{owner.name.personaname}}: {{math.trunc(owner.playtime)}} hour(s)</p>
+                                            <div class="w-25 graph-bg m-auto d-flex align-items-end">
+                                                <div class="w-100 bg-primary graph-bar" [style.height.vh]="(owner.playtime/item.total_playtime) * 20"></div>
+                                            </div>
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         </ng-container>
